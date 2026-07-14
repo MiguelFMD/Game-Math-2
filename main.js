@@ -18,6 +18,7 @@ function cargarMenu(rutaBase) {
                 <li><a href="${rutaBase}index.html"><i class="fa-solid fa-bookmark"></i> Tema 0: Introducción</a></li>
                 <li><a href="${rutaBase}contenido/tema-1.html"><i class="fa-solid fa-bookmark"></i> Tema 1: Análisis y costes de algoritmos</a></li>
                 <li><a href="${rutaBase}contenido/tema-2.html"><i class="fa-solid fa-bookmark"></i> Tema 2: Recursividad</a></li>
+                <li><a href="${rutaBase}contenido/tema-3.html"><i class="fa-solid fa-bookmark"></i> Tema 3: Árboles y ABB</a></li>
             </ul>
         </nav>
         <h2>Ejercicios</h2>
