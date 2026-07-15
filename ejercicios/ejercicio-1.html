@@ -62,6 +62,78 @@
                 <li> Ahora tu proyecto ya está actualizado y puedes trabajar con la última versión.</li> 
             </ul>
 
+            <div class="callout definition">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> Recuerda los pasos</div>
+                <p> Estos pasos son importantes hacerlos antes de ponerte a trabajar en un respositorio, tanto para este
+                    como para tus siguientes proyectos que trabajes en equipo.
+                </p>
+            </div>
+
+            <h3> 2. Trabajar en el proyecto </h3>
+            
+            <p> Para trabajar en el proyecto debes crear tu propia carpeta de trabajo en la siguiente ruta: </p>
+            <p class="text-center"> Assets/GameMath_II/Alumnos_2627/ </p>
+            <p> Ponle el siguiente formato de nombre:  </p>
+            <p class="text-center"> <i> ApellidosNombre</i> </p>
+            <p> Ahora crea una estructura de carpetas, dentro de tu carpeta que acabas de crear de la siguiente manera: </p>
+            <ul>
+                <li> Assets/GameMath_II/Alumnos_2627/ApellidosNombre/<strong>Scripts</strong></li>   
+                <li> Assets/GameMath_II/Alumnos_2627/ApellidosNombre/<strong>Scenes</strong></li>   
+                <li> Assets/GameMath_II/Alumnos_2627/ApellidosNombre/<strong>Prefabs</strong></li>   
+            </ul>
+
+            <p> Siempre que vayas a trabajar en el proyecto <strong>debes trabajar únicamente dentro de tu carpeta</strong>.
+                Todos los nuevos assets que crees o modifiques deben de estar ahí dentro.</p>
+            <p> Por ahora con esas carpetas tienes suficiente. Puedes crear más <strong>siempre y cuando sea dentro de tu carpeta</strong></p>
+            <p> Tus carpetas se mantendrán guardadas en tu ordenador (en local) pero solo las podrás ver tú.</p>
+            
+            <div class="callout definition">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> La magia del .gitignore </div>
+                    <p> La carpeta "Alumnos_2627" está incluída en el archivo .gitignore, esto hace que git ignore por completo los cambios 
+                        que ocurren dentro de esa carpeta. Esto nos viene de perlas porque no queremos que git detecte los cambios hechos
+                        por los alumnos, si no, al actualizar el proyecto, los alumnos tendrían que subir sus cambios lo que puede llevar a conflictos
+                        dentro del proyecto, cosa que no queremos que pase.
+                    </p>
+            </div>
+            
+            <h4> ¿Qué pasa si trabajo fuera de mi carpeta? </h4>
+            <p> Esto es algo que puede pasar sin darte cuenta y es completamente normal. Git detectará tus modificaciones y podrás verlos abriendo
+                GitHub Desktop a la izquierda, en la ventana "Changes", habrá una lista con todos los cambios que se hayan detectado.
+                Si has trabajado de manera correcta, en tu carpeta, estará vacía.
+            </p>
+            <p> Para llevar el trabajo realizado a tu carpeta pero no modificar el proyecto sigue estos pasos:</p>
+            <ul>
+                <li> 1. Observa en la lista de cambios los archivos que has moficado y búscalos dentro del proyecto de Unity</li>
+                <li> 2. Haz una copia de esos archivos y guardalos en tu carpeta. Asegurate de que están guardados en tu carpeta.</li>
+                <li> 3. Ve a github desktop y en la ventana "Changes" a la izquierda, haz clic derecho en " changed files" y luego
+                    "discard changes" para eliminar los cambios.
+            </ul>
+
+            <p> Con estos pasos tendrás tu trabajo guardado en local sin modificar el proyecto en el caso de que hayas moficado archivos 
+                originales del proyecto.
+            </p>
+
+            <h3> 3. Exportar el trabajo y entregar </h3>
+
+            <p> La primera entrega de la asignatura consiste en entregar un script creado dentro de tu carpeta "Scripts"
+                para comprobar que has entendido todo este proceso. Para ello vas a exporarlo como ".uasset".
+            </p>
+            <ul>
+                <li> 1. Crea el script haciendo clic derecho en tu carpeta "Scritps". Da igual el tipo de Script para esta tarea.
+                    Ponle de nombre "entrega-1".
+                </li>
+                <li> 2. Asegúrate de que lo has guardado en el sitio correcto. </li>
+                <li> 3. Para exportarlo, pulsa clic derecho al asset que quieras exportar, en este caso tu script que acabas
+                    de crear, luego pulsa "Export as .uasset".
+                </li>
+            </ul>
+
+            <div class="callout definition">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> ¿Qué es un .uasset? </div>
+                    <p> 
+                    </p>
+            </div>
+
         </section>
     </main>
 

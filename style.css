@@ -209,6 +209,13 @@ h3 {
     transition: color 0.3s ease;
 }
 
+h4 {
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+    margin: 1.5rem 0 0.75rem 0;
+    transition: color 0.3s ease;
+}
+
 p {
     margin-bottom: 1.25rem;
 }
@@ -261,6 +268,11 @@ table {
     border-collapse: collapse;
     margin-bottom: 1.5rem;
     font-size: 0.95rem;
+}
+
+/* --- CLASES DE UTILIDAD --- */
+.text-center {
+    text-align: center;
 }
 
 th, td {
