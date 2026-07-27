@@ -67,8 +67,8 @@
             </ul>
             <p>El objetivo es encontrar una fórmula (función) que nos diga cuántos pasos da el algoritmo según crece $n$.</p>
 
-            <h4>Ejemplo visual: Calcular $n^2$</h4>
-            <p>Imagina tres formas de calcular el cuadrado de un número $n$:</p>
+            <h4>Ejemplo: Calcular $n^2$</h4>
+            <p>Imagina tres formas de calcular el cuadrado de un número $n$ "a mano":</p>
             <ul>
                 <li><strong>Forma A (Directa):</strong> $m = n * n$. Tarda 1 paso, sin importar lo grande que sea $n$.</li>
                 <li><strong>Forma B (Sumas):</strong> Sumar $n$ veces (ej: $5^2 = 5+5+5+5+5$). Si $n$ es 1000, hace 1000 sumas.</li>
@@ -105,6 +105,8 @@
             </div>
 
             <h3>5. Pila de Llamadas y Costes (Coste Espacial)</h3>
+
+            <p> Antes de empezar este apartado mira el <a href="tema-2.html"> Tema 2</a>.</p>
             <p>El Coste Espacial (o complejidad espacial) mide cuánta memoria necesita un algoritmo para ejecutarse, en función del tamaño de la entrada ($n$). No contamos el espacio que ocupan los datos originales (el vector de entrada), sino la memoria extra que necesitamos para trabajar.</p>
 
             <p>¿Qué incluye exactamente ese "espacio extra"?</p>
@@ -138,9 +140,33 @@ int FibonacciRecursivo(int n) {
                 <div class="callout-title"><i class="fa-solid fa-triangle-exclamation"></i> ¡Cuidado con el Stack Overflow!</div>
                 <p>En el Fibonacci recursivo, aunque no declaras vectores, para calcular $fib(n)$ necesitas llegar hasta $fib(1)$. Esto crea una cadena de llamadas abiertas de profundidad $n$ en la pila. Si $n$ es muy grande, puedes agotar la memoria y provocar un error de Stack Overflow.</p>
             </div>
+            <h3>6. El problema de ordenar un array</h3>
+            <p>Ordenar un conjunto de datos es uno de los problemas más clásicos y estudiados en la informática. Es un paso previo fundamental para poder optimizar otras operaciones (como la Búsqueda Binaria) y es crucial en lógicas de juego, como ordenar un inventario, listar las puntuaciones de los jugadores o renderizar objetos 3D según su distancia a la cámara.</p>
 
-            <h3>6. Algoritmos Famosos: Tabla de Costes Temporales y Espaciales</h3>
-            <p>A continuación, se detallan los costes. Recuerda que el Coste Espacial mostrado es la memoria auxiliar (extra); no contamos el espacio del propio vector de datos, que siempre es $n$.</p>
+            <div class="callout challenge">
+                <div class="callout-title"><i class="fa-solid fa-code"></i> ¿Por qué estudiarlos si ya existe List.Sort()?</div>
+                <p>En lenguajes modernos como C#, rara vez programarás un algoritmo de ordenación desde cero. Lo habitual es utilizar métodos integrados de la API de .NET como <code>List&lt;T&gt;.Sort()</code>. Sin embargo, conocer cómo funcionan por debajo es vital para un desarrollador de videojuegos por dos motivos:</p>
+                <ul>
+                    <li><strong>Criterio técnico:</strong> Te permite entender los compromisos entre el coste temporal (CPU) y espacial (RAM) ocultos en el sistema.</li>
+                    <li><strong>Optimización extrema:</strong> En un videojuego, a menudo necesitas ordenar datos en cada <em>frame</em> (60 veces por segundo). Entender estos algoritmos te da el criterio necesario para elegir la estructura de datos correcta y evitar caídas drásticas de rendimiento.</li>
+                </ul>
+            </div>
+
+            <h4>El tamaño importa: Algoritmos Híbridos</h4>
+            <p>En la vida real no existe el "algoritmo perfecto" absoluto; la elección depende directamente de la talla del problema 
+                ($n$). De hecho, las funciones integradas de la industria <a href="https://learn.microsoft.com/es-es/dotnet/api/system.collections.generic.list-1.sort?view=net-10.0#comentarios"> (como la implementación de C# que utiliza Microsoft)</a> no usan 
+                un único algoritmo ciegamente, sino una combinación inteligente de ellos:</p>
+
+            <ul>
+                <li><strong>Para $n$ muy pequeño (ej. menos de 16 elementos):</strong> Utilizan el algoritmo de <strong>Inserción</strong>. Aunque su complejidad teórica global es $O(n^2)$, para poquísimos datos sus operaciones son tan mecánicamente simples que resulta más rápido que algoritmos avanzados al ahorrarse el coste de preparar la recursividad en memoria.</li>
+                <li><strong>Para $n$ grande:</strong> El motor salta automáticamente a utilizar <strong>Quicksort</strong>, que es el rey indiscutible de la velocidad en la práctica, logrando un tiempo promedio de $O(n \log n)$.</li>
+                <li><strong>El salvavidas del Peor Caso:</strong> Como vimos, Quicksort puede degenerar en un lentísimo $O(n^2)$ si tiene mala suerte con los datos. Si el método <code>Sort()</code> detecta que la partición recursiva se está volviendo demasiado profunda, frena en seco y cambia a <strong>Heapsort</strong>, garantizando que el rendimiento jamás caiga por debajo de $O(n \log n)$.</li>
+            </ul>
+
+            <p>Entender que el motor evalúa y cambia de estrategia en tiempo real según van creciendo los datos es lo que te diferencia de un simple usuario de código a un verdadero ingeniero de software capaz de optimizar recursos críticos.</p>
+
+            <h4>6.1 Listado de algoritmos con sus costes </h4>
+            <p>A continuación, se detallan los costes de algunos algoritmos famosos para <strong> ordenar un array</strong>. Recuerda que el Coste Espacial mostrado es la memoria auxiliar (extra); no contamos el espacio del propio vector de datos, que siempre es $n$.</p>
 
             <table>
                 <thead>
@@ -154,24 +180,9 @@ int FibonacciRecursivo(int n) {
                     </tr>
                 </thead>
                 <tbody>
+                    
                     <tr>
-                        <td>Búsqueda Lineal</td>
-                        <td>$O(1)$</td>
-                        <td>$O(n)$</td>
-                        <td>$O(n)$</td>
-                        <td>$O(1)$</td>
-                        <td>No requiere memoria extra.</td>
-                    </tr>
-                    <tr>
-                        <td>Búsqueda Binaria</td>
-                        <td>$O(1)$</td>
-                        <td>$O(\log n)$</td>
-                        <td>$O(\log n)$</td>
-                        <td>$O(1)$</td>
-                        <td>Versión iterativa. Muy eficiente en espacio y tiempo.</td>
-                    </tr>
-                    <tr>
-                        <td>Burbuja</td>
+                        <td><a href="https://commons.wikimedia.org/wiki/File:Sorting_bubblesort_anim.gif#/media/File:Sorting_bubblesort_anim.gif">Burbuja</a></td>
                         <td>$O(n)$</td>
                         <td>$O(n^2)$</td>
                         <td>$O(n^2)$</td>
@@ -179,7 +190,7 @@ int FibonacciRecursivo(int n) {
                         <td>Ordena "in-place", por eso gasta poco espacio.</td>
                     </tr>
                     <tr>
-                        <td>Inserción</td>
+                        <td><a href="https://commons.wikimedia.org/wiki/File:Sorting_insertion_sort_anim.gif#/media/File:Sorting_insertion_sort_anim.gif">Inserción</a></td>
                         <td>$O(n)$</td>
                         <td>$O(n^2)$</td>
                         <td>$O(n^2)$</td>
@@ -187,7 +198,7 @@ int FibonacciRecursivo(int n) {
                         <td>Muy eficiente ($O(n)$ tiempo) si la lista ya está casi ordenada.</td>
                     </tr>
                     <tr>
-                        <td>Selección</td>
+                        <td><a href="https://commons.wikimedia.org/wiki/File:Sorting_selection_sort_anim.gif#/media/File:Sorting_selection_sort_anim.gif">Selección</a></td>
                         <td>$O(n^2)$</td>
                         <td>$O(n^2)$</td>
                         <td>$O(n^2)$</td>
@@ -195,7 +206,7 @@ int FibonacciRecursivo(int n) {
                         <td>Ineficiente en tiempo, pero muy bajo consumo de memoria.</td>
                     </tr>
                     <tr>
-                        <td>Quicksort</td>
+                        <td><a href="https://en.wikipedia.org/wiki/File:Sorting_quicksort_anim.gif#/media/File:Sorting_quicksort_anim.gif">Quicksort</a></td>
                         <td>$O(n \log n)$</td>
                         <td>$O(n \log n)$</td>
                         <td>$O(n^2)$</td>
@@ -204,13 +215,51 @@ int FibonacciRecursivo(int n) {
                     </tr>
                 </tbody>
             </table>
+
+            <h4 id = "busqueda-binaria"> 6.2 Búsqueda binaria </h4>
+            <p> Una vez tenemos un array ordenado, buscar un elemento en el array se convierte en una tarea mucho más sencilla
+                computacionalmente hablando. Teniendo en cuenta que los elementos del array están ordenados podemos utilizar la Búsqueda Binaria:
+            <p> Este algoritmo requiere que el vector esté previamente ordenado. Su gran ventaja es que divide el espacio de búsqueda a la mitad en cada paso, 
+                logrando un coste temporal hiperrápido de $O(\log n)$.</p>
             
-            <p><strong>Resumen de uso:</strong></p>
-            <ul>
-                <li><strong>Para ahorrar memoria ($O(1)$):</strong> Usa algoritmos iterativos como Inserción (si son pocos datos) o Heapsort (si son muchos, aunque es más complejo de programar).</li>
-                <li><strong>Para velocidad ($O(n \log n)$):</strong> Usa Quicksort. Aunque gasta un poco de memoria en la pila ($O(\log n)$), es el más rápido en la práctica.</li>
-                <li><strong>¡Cuidado con la recursividad!</strong> Algoritmos como Quicksort pueden tener un coste espacial oculto en el peor caso ($O(n)$) si la partición de datos es mala, pudiendo desbordar la pila.</li>
-            </ul>
+                <pre><code>// Búsqueda Binaria Iterativa: Coste Temporal O(log n) | Espacial O(1)
+            int BusquedaBinaria(int[] array, int objetivo) {
+                int izquierda = 0;
+                int derecha = array.Length - 1;
+
+                while (izquierda &lt;= derecha) {
+                    // Calculamos el punto medio de forma segura para evitar desbordamientos
+                    int medio = izquierda + (derecha - izquierda) / 2;
+
+                    // Caso base: hemos encontrado el elemento
+                    if (array[medio] == objetivo) {
+                        return medio; 
+                    }
+
+                    // Si el objetivo es mayor, ignoramos la mitad izquierda
+                    if (array[medio] &lt; objetivo) {
+                        izquierda = medio + 1;
+                    }
+                    // Si el objetivo es menor, ignoramos la mitad derecha
+                    else {
+                        derecha = medio - 1;
+                    }
+                }
+
+                // Si el bucle termina y llegamos aquí, el elemento no existe en el array
+                return -1;
+            }</code></pre>
+            </p>
+
+            <div class="callout definition">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> Estrategias algorítmicas</div>
+                <p> Existen diferentes estrategias algorítmicas que iremos viendo a lo largo del curso. Este algoritmo utiliza 
+                    la estrategia de <a href="https://es.wikipedia.org/wiki/Algoritmo_divide_y_vencer%C3%A1s"> "Divide y vencerás"</a> .</p>
+            </div>
+
+
+            
+            
         </section>
     </main>
 

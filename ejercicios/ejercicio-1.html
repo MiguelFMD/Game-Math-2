@@ -72,14 +72,14 @@
             <h3> 2. Trabajar en el proyecto </h3>
             
             <p> Para trabajar en el proyecto debes crear tu propia carpeta de trabajo en la siguiente ruta: </p>
-            <p class="text-center"> Assets/GameMath_II/Alumnos_2627/ </p>
+            <p class="text-center"> /Assets/ClassResources/Students </p>
             <p> Ponle el siguiente formato de nombre:  </p>
             <p class="text-center"> <i> ApellidosNombre</i> </p>
             <p> Ahora crea una estructura de carpetas, dentro de tu carpeta que acabas de crear de la siguiente manera: </p>
             <ul>
-                <li> Assets/GameMath_II/Alumnos_2627/ApellidosNombre/<strong>Scripts</strong></li>   
-                <li> Assets/GameMath_II/Alumnos_2627/ApellidosNombre/<strong>Scenes</strong></li>   
-                <li> Assets/GameMath_II/Alumnos_2627/ApellidosNombre/<strong>Prefabs</strong></li>   
+                <li> /Assets/ClassResources/Students/ApellidosNombre/<strong>Scripts</strong></li>   
+                <li> /Assets/ClassResources/Students/ApellidosNombre/<strong>Scenes</strong></li>   
+                <li> /Assets/ClassResources/Students/ApellidosNombre/<strong>Prefabs</strong></li>   
             </ul>
 
             <p> Siempre que vayas a trabajar en el proyecto <strong>debes trabajar únicamente dentro de tu carpeta</strong>.
@@ -89,10 +89,10 @@
             
             <div class="callout definition">
                 <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> La magia del .gitignore </div>
-                    <p> La carpeta "Alumnos_2627" está incluída en el archivo .gitignore, esto hace que git ignore por completo los cambios 
-                        que ocurren dentro de esa carpeta. Esto nos viene de perlas porque no queremos que git detecte los cambios hechos
-                        por los alumnos, si no, al actualizar el proyecto, los alumnos tendrían que subir sus cambios lo que puede llevar a conflictos
-                        dentro del proyecto, cosa que no queremos que pase.
+                    <p> La carpeta "/Assets/ClassResources/Students" está incluída en el archivo .gitignore, esto hace que git ignore por completo los cambios 
+                        que ocurren dentro de esa carpeta. Esto nos viene de perlas porque no queremos que git detecte tus cambios hechos, 
+                        si no, al actualizar el proyecto, tendrías que subir tus cambios lo que puede llevar a conflictos
+                        dentro del proyecto con tus compañeros, cosa que no queremos que pase.
                     </p>
             </div>
             
@@ -116,7 +116,7 @@
             <h3> 3. Exportar el trabajo y entregar </h3>
 
             <p> La primera entrega de la asignatura consiste en entregar un script creado dentro de tu carpeta "Scripts"
-                para comprobar que has entendido todo este proceso. Para ello vas a exporarlo como ".uasset".
+                para comprobar que has entendido todo este proceso. Para ello vas a exporarlo como ".unitypackage".
             </p>
             <ul>
                 <li> 1. Crea el script haciendo clic derecho en tu carpeta "Scritps". Da igual el tipo de Script para esta tarea.
@@ -124,13 +124,19 @@
                 </li>
                 <li> 2. Asegúrate de que lo has guardado en el sitio correcto. </li>
                 <li> 3. Para exportarlo, pulsa clic derecho al asset que quieras exportar, en este caso tu script que acabas
-                    de crear, luego pulsa "Export as .uasset".
+                    de crear, luego pulsa "Export as Asset Package...".
                 </li>
+                <li> 4. Se abrirá la ventana "Exporting package". Por defecto vienen todos los scripts incluídos, <strong>procura desactivar
+                    la opción "include all scripts"</strong>. Las dependencias son necesarias en caso de que lo que vayas a exportar dependa de 
+                otros assets, para esta entrega, solo debe aparecer el script en tu carpeta. Pulsa "Export..."</li>
+                <li> 5. Busca una ruta para guardar tu ".unitypackage". Ese es el archivo que debes entregar en la entrega del campus virtual.</li>
             </ul>
 
             <div class="callout definition">
-                <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> ¿Qué es un .uasset? </div>
+                <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> ¿Qué es un .unitypackage? </div>
                     <p> 
+                        <a href="https://docs.unity3d.com/6000.1/Documentation/Manual/AssetPackagesCreate.html"> Aquí</a> puedes consultar
+                        más información acerca de los .unitypackages.
                     </p>
             </div>
 

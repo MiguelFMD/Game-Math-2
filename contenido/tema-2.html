@@ -143,8 +143,47 @@ private void Func2() {
 }</code></pre>
             <p><em>Nota: Como vimos en el análisis de costes, esta doble llamada genera un árbol exponencial, dándole una complejidad temporal altísima de $O(2^n)$.</em></p>
 
+            <h4> Búsqueda binaria recursiva </h4>
+            <p> A continuación se muestra el código de la <a href="busqueda-binaria">búsqueda binaria</a>, que vimos en el tema anterior,
+            pero de manera recuriva. Analiza sus costes, temporal y espacial, y compáralo con su versión iterativa </p>
+            <pre><code>// Búsqueda Binaria Recursiva: Coste Temporal O(log n) | Espacial O(log n)
+            int BusquedaBinariaRecursiva(int[] array, int objetivo, int izquierda, int derecha) {
+                // Condición de terminación: si los índices se cruzan, el elemento no existe
+                if (izquierda &gt; derecha) {
+                    return -1; 
+                }
+
+                // Calculamos el punto medio
+                int medio = izquierda + (derecha - izquierda) / 2;
+
+                // Caso base de éxito: hemos encontrado el elemento
+                if (array[medio] == objetivo) {
+                    return medio; 
+                }
+
+                // Caso recursivo: el objetivo es mayor, buscamos en la mitad derecha
+                if (array[medio] &lt; objetivo) {
+                    return BusquedaBinariaRecursiva(array, objetivo, medio + 1, derecha);
+                }
+                // Caso recursivo: el objetivo es menor, buscamos en la mitad izquierda
+                else {
+                    return BusquedaBinariaRecursiva(array, objetivo, izquierda, medio - 1);
+                }
+            }</code></pre>
+
+            <div class="callout definition">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> También importa la legibilidad</div>
+                <p> A la hora de programar también importa lo legible que sea el código, muchas veces las soluciones recursivas serán 
+                    más legibles que las iterativas y viceversa. Prueba a realizar el <a href="../ejercicios/ejercicio-3.html"> ejercicio 3 </a> y verás la diferencia
+                    de ambas versiones.
+                </p>
+
+                </p>
+            </div>
+
             <h3>5. Ejercicios de recursividad</h3>
             <p>Implementa las siguientes funciones utilizando metodologías recursivas en C#:</p>
+            <p> <i> Nota: vector es otra manera de decir array, básicamente una lista de elementos</i></p>
             <ol>
                 <li>Contar las cifras de un entero no negativo $n$. <em>(Pista: si divides por división entera entre 10, le vas quitando cifras al número. Ej: 1234 / 10 = 123).</em></li>
                 <li>Contar las veces que una cifra $c$ aparece en un entero no negativo $n$. <em>(Pista: piensa cuál es el resultado de 1234 % 10).</em></li>
@@ -160,7 +199,7 @@ private void Func2() {
 
             <div class="callout challenge">
                 <div class="callout-title"><i class="fa-solid fa-dumbbell"></i> Ejercicio Extra</div>
-                <p>Resuelve los ejercicios anteriores de manera iterativa (usando bucles for/while) y analiza el coste espacial y temporal de las dos versiones (recursiva vs. iterativa) usando la Notación O Grande que aprendimos en el Tema 1.</p>
+                <p>Resuelve los ejercicios anteriores de manera iterativa (usando bucles for/while) y analiza el coste espacial y temporal de las dos versiones (recursiva vs. iterativa) usando la Notación O Grande que aprendimos en el <a href="tema-1">Tema 1</a>.</p>
             </div>
 
         </section>

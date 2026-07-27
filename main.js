@@ -19,13 +19,19 @@ function cargarMenu(rutaBase) {
                 <li><a href="${rutaBase}contenido/tema-1.html"><i class="fa-solid fa-bookmark"></i> Tema 1: Análisis y costes de algoritmos</a></li>
                 <li><a href="${rutaBase}contenido/tema-2.html"><i class="fa-solid fa-bookmark"></i> Tema 2: Recursividad</a></li>
                 <li><a href="${rutaBase}contenido/tema-3.html"><i class="fa-solid fa-bookmark"></i> Tema 3: Árboles y ABB</a></li>
+                <li><a href="${rutaBase}contenido/tema-4.html"><i class="fa-solid fa-bookmark"></i> Tema 4: Grafos</a></li>
+                <li><a href="${rutaBase}contenido/tema-5.html"><i class="fa-solid fa-bookmark"></i> Tema 5: Probabilidad y estadística</a></li>
             </ul>
         </nav>
         <h2>Ejercicios</h2>
         <ul>
             <li><a href="${rutaBase}ejercicios/ejercicio-0.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 0: Introducción al repositorio</a></li>
             <li><a href="${rutaBase}ejercicios/ejercicio-1.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 1: Actualizar proyecto y entregas</a></li>
-            <li><a href="${rutaBase}ejercicios/ejercicio-2.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 2: Descendiente de GameObject</a></li>
+            <li><a href="${rutaBase}ejercicios/ejercicio-2.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 2: Ordenar inventario</a></li>
+            <li><a href="${rutaBase}ejercicios/ejercicio-3.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 3: Descendiente de GameObject</a></li>
+            <li><a href="${rutaBase}ejercicios/ejercicio-4.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 4: Inventario físico (árboles)</a></li>
+            <li><a href="${rutaBase}ejercicios/ejercicio-5.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 5: Generación procedural básica</a></li>
+            
             </ul>
     `;
 

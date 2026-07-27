@@ -59,6 +59,8 @@
                 <p><em>Nota: Un árbol sin nodos se denomina "árbol nulo" y no tiene raíz.</em></p>
             </div>
 
+             <p> AÑADIR AQUI EJEMPLOS DE ARBOLES</p>
+
             <h3>2. Terminología Esencial</h3>
             <p>El vocabulario utilizado para los árboles se basa en las relaciones familiares genealógicas:</p>
             <ul>
@@ -86,6 +88,7 @@
                 <li><strong>Equivalentes:</strong> Son similares y además contienen la misma información.</li>
                 <li><strong>Equilibrado:</strong> Un árbol donde, para cualquier nodo, la diferencia de altura entre su subárbol izquierdo y derecho es como máximo 1.</li>
             </ul>
+
             <p>Fórmula de equilibrio matemático: $|\text{Altura(Izq)} - \text{Altura(Der)}| \le 1$ </p>
 
             <h3>4. Recorridos del Árbol</h3>
@@ -119,9 +122,9 @@
                 </li>
             </ul>
 
-            <h3>6. Implementación y Análisis de Eficiencia</h3>
-            <p>Ejemplo de implementación en C++ para la inserción recursiva, que ilustra la lógica interna del ABB:</p>
-            
+            <p> AÑADIR AQUI ANIMACIONES DE OPERACIONES</p>
+
+            <h3>6. Análisis de Eficiencia</h3>
 
             <h4>Comparativa de Complejidad (Big O)</h4>
             <p>La eficiencia depende fuertemente de si el árbol está equilibrado. En el peor caso (árbol degenerado), todos los nodos caen hacia un solo lado 
@@ -131,23 +134,17 @@
                 <thead>
                     <tr>
                         <th>Estructura</th>
-                        <th>Búsqueda (Promedio)</th>
-                        <th>Inserción (Promedio)</th>
+                        <th>Búsqueda </th>
+                        <th>Inserción</th>
                         <th>Peor Caso (Desequilibrado)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Array Ordenado ]</td>
-                        <td>$O(\log n)$ </td>
+                        <td><strong>Array Ordenado</strong></td>
                         <td>$O(n)$ </td>
                         <td>$O(n)$ </td>
-                    </tr>
-                    <tr>
-                        <td>Lista Enlazada </td>
-                        <td>$O(n)$ </td>
-                        <td>$O(1)$ o $O(n)$ </td>
-                        <td>$O(n)$ </td>
+                        <td>$---$ </td>
                     </tr>
                     <tr>
                         <td><strong>Árbol ABB</strong> </td>
@@ -158,12 +155,27 @@
                 </tbody>
             </table>
 
+           
+
+            <h4>El Árbol de Escena (Jerarquía) en el Motor de Juego</h4>
+            <p>El núcleo de motores como Unity organiza los elementos visuales y colisiones mediante una estructura de datos jerárquica de tipo árbol:</p>
+
+            <p> AÑADIR ARBOL DE JERARQUIA DE EJEMPLOS</p>
+            
+            <p>Cada nodo almacena una <strong>matriz de transformación afín local</strong> (traslación, rotación, escala). 
+                Al recorrer el grafo de manera descendente, el motor multiplica las matrices para calcular la posición absoluta final. 
+                Si el nodo "Tanque" avanza, todos sus nodos hijos heredarán el movimiento y se desplazarán solidariamente en el espacio.</p>
+                 
+           
             <div class="callout challenge">
-                <div class="callout-title"><i class="fa-solid fa-gamepad"></i> Recurso Recomendado</div>
-                <p>Para entender mejor cómo se insertan y eliminan nodos, te recomendamos utilizar el 
-                    <strong>Simulador de Árboles Binarios (USFCA)</strong>. 
-                </p>
+                <div class="callout-title"><i class="fa-solid fa-dumbbell"></i> Investiga: </div>
+                 <p>Estructuras derivadas de esta jerarquía, como los <strong>BSP Trees</strong> (Particionado de Espacio Binario), 
+                <strong>Octrees</strong> o los <strong>BVH Trees
+                </strong> (Jerarquía de Volúmenes Envolventes), permiten al motor descartar rápidamente colisiones o renderizados de objetos ocultos, optimizando el rendimiento.</p>
+                <a href="www.youtube.com/watch?v=wLHXn8IlAiA"> BSP Trees: The Magic Behind Collision Detection in Quake </a>
             </div>
+            
+               
 
         </section>
     </main>

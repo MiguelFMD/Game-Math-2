@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema 4: Grafos</title>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add('dark-mode');
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+            }
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                throwOnError : false
+            });">
+    </script>
+    
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+    <aside></aside>
+
+    <main>
+        <section id="tema-4">
+            <h2 class="section-title">
+                <i class="fa-solid fa-bookmark"></i> Tema 4: Grafos
+            </h2>
+            <h3>1. Introducción</h3>
+            <p>La conceptualización de un videojuego moderno requiere un entendimiento profundo de los sistemas que definen sus mecánicas, narrativas, arquitecturas espaciales y sistemas de inteligencia artificial. Tradicionalmente, la enseñanza de la teoría de grafos se ha abordado desde una perspectiva estrictamente matemática o algorítmica.</p>
+            
+            <p>Sin embargo, la teoría de grafos puede entenderse de forma muy visual y aplicada, traduciendo conceptos abstractos de la matemática discreta en herramientas prácticas para el diseño de experiencias interactivas.</p>
+
+
+            <h3>2. Terminología y Base Teórica</h3>
+            
+             <h4>Definicion </h4>
+                <p>Un grafo es un conjunto de objetos representados por puntos (<strong>vértices o nodos</strong>) conectados por líneas (<strong>aristas o conexiones</strong>). 
+                 </p>
+
+            <p>Al igual que los árboles, los grafos poseen un vocabulario matemático propio que nos permite clasificar y entender su estructura. Formalmente, un grafo $G$ se define como un par ordenado $G = (V, E)$, donde $V$ es un conjunto de <strong>vértices</strong> y $E$ un conjunto de <strong>aristas</strong>.</p>
+            
+            <p>GRAFO BÁSICO PARA EXPLICAR CONCEPTOS</p>
+            <h4>Conceptos Fundamentales</h4>
+            <ul>
+                <li><strong>Vértice (Nodo):</strong> La unidad fundamental del grafo. En un videojuego puede representar un estado, una sala de una mazmorra, un punto en el mapa o un diálogo.</li>
+                <li><strong>Arista (Arco o Conexión):</strong> La línea que une dos vértices. Representa una relación, un pasillo o una transición válida entre ellos.</li>
+                <li><strong>Camino (Path):</strong> Una secuencia de vértices conectados por aristas que permite ir desde un nodo de origen hasta un destino.</li>
+                <li><strong>Ciclo:</strong> Un camino que empieza y termina exactamente en el mismo vértice, formando un bucle cerrado. (Nota: los árboles son, por definición, grafos <em>sin ciclos</em>).</li>
+                <li><strong>Grado de un nodo:</strong> El número de aristas conectadas a un vértice. En los grafos dirigidos, se divide en <strong>grado de entrada</strong> (flechas que apuntan hacia él) y <strong>grado de salida</strong> (flechas que salen de él).</li>
+                <li><strong>Nivel / Profundidad: </strong> Número de vértices/nodos que hay en un camino específico </li>    
+            </ul>
+
+            <h4>Tipos de Grafos</h4>
+            <ul>
+                <li><strong>Grafo No Dirigido:</strong> Las aristas son bidireccionales. Si el nodo A conecta con B, el jugador puede moverse libremente de A a B y de B a A (ej. un pasillo normal sin trampas).</li>
+                <li><strong>Grafo Dirigido (Dígrafo):</strong> Las aristas tienen dirección. Se puede ir de A a B, pero no necesariamente volver (ej. dejarse caer por un bordillo o una puerta de un solo sentido).</li>
+                <li><strong>Grafo Ponderado:</strong> Cada arista tiene un "peso" matemático o valor asociado. En la IA de navegación, este peso suele representar la distancia, el tiempo o el coste de estamina necesario para cruzar ese camino.</li>
+            </ul>
+
+            <h4> Recorrido de grafos, algoritmos de exploración</h4>
+            
+            <ul>
+                <li><strong>Búsqueda en Profundidad (DFS):</strong> Sigue un único camino de nodos consecutivos explorando el camino más largo posible antes de verse obligado a retroceder. </li>
+                <li><strong>Búsqueda en Anchura (BFS):</strong> Explora el grafo nivel por nivel, analizando en primera instancia todas los nodos inmediatos antes de examinar nodos secundarios.</li>
+            </ul>
+
+            <h3>3. Casos de uso </h3>
+            
+            <p> En este capítulo veremos diferentes casos de uso de la teoría de grafos aplicado a videojuegos </p>    
+            
+            <h4> 3.1. Ficción interactiva: Space Diva </h4>
+            
+            <p>EJEMPLOS DE GRAFOS DE SPACE DIVA Y TABLA DE DATOS</p>
+
+            <div class="callout challenge">
+                <div class="callout-title"><i class="fa-solid fa-dumbbell"></i> Propuesta de ejercicio: </div>
+                <p> Prueba <a href="https://twinery.org/" > Twine </a> una herramienta open-source para narrar historias interactivas no lineales.
+                    En la plataforma <a href="https://itch.io/games/tag-twine"> itch.io </a> puedes encontrar historias interactivas hechas con Twine.
+                </p>
+            </div>
+
+            <h4> 3.2. Estructuras No Transitivas: Piedra, papel y tijera </h4>
+
+            <p> Una relación binaria $R$ sobre un elemento $A$ es transitiva cuando se cumple: siempre que un elemento se relaciona con otro y este último con un tercero, entonces el primero se relaciona con el tercero.</p>
+            
+            <p> En el desarrollo de videojuegos, se suelen usar las siguientes formas de representar las relaciones binarias:</p>
+            <ul>
+                <li> Como <strong> Grafo </strong>: cada vez que un nodo $v1$ se pueda llegar a otro $v3$, pasando primero por un nodo intermedio $v2$, entonces 
+                también existirá la arista $(v1, v3)$</li>
+                <li> Como <strong> Matriz de adyacencia $M$</strong>: la matriz es tal que $M$  V  $M^2 = M$ </li>
+            </ul>
+            <p>PONER AQUÍ EJEMPLO piedra-papel-tijera</p>
+
+            <p> Al seguir las reglas de las estructuras No transitivas encontramos <i> juegos balanceado </i> como es el caso 
+            del piedra-papel-tijera. En este caso la dirección de las aristas del grafo son muy importantes: las que entran son debilidades, y las que salen fortalezas.
+            </p>
+
+            <div class="callout challenge">
+                <div class="callout-title"><i class="fa-solid fa-dumbbell"></i> Propuesta de ejercicio: </div>
+                <p> ¿Se te ocurre algún videojuego donde exista esta estructura? ¿Se siguen cumpliendo las reglas de las estructuras no transitivas? ¿Qué ocurre cuando no se cumplen?
+                </p>
+            </div>
+
+            <h4> 3.3. Generación procedural: Candle Tale </h4>
+
+           
+            <div class="callout definition">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> Investiga: </div>
+                <p> Puedes encontrar miles de recursos acerca de diferentes técnicas de generación procedural con grafos. Lo más importante es entender las bases de esta estrctura de datos
+                    para aprovecharla a tu favor. Busca información de algún videojuego que sepas (o creas) que usa la generación procedural y comprueba que usa la teoría de grafos para su generación.
+                </p>
+            </div>
+
+            <h4> 3.4. Navegación e Inteligencia Artificial: Candle Tale</h4>
+            
+        </section>
+       
+    </main>
+
+    <script src="../main.js"></script>
+    <script>
+        cargarMenu("../"); // Carga el índice dinámicamente ajustando las rutas
+    </script>
+</body>
+</html>
