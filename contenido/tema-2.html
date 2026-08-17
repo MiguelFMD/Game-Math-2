@@ -180,6 +180,74 @@ private void Func2() {
 
                 </p>
             </div>
+            <h3>Visualización Interactiva: Generación Procedural</h3>
+            <p>En el desarrollo de videojuegos, la recursividad es la base matemática para la generación de naturaleza (árboles, ríos, relámpagos) mediante fractales. Juega con los deslizadores para ver cómo el <strong>caso base</strong> detiene el crecimiento del árbol.</p>
+
+            <!-- Añadimos height: auto; para evitar el scroll vertical de la clase canvas-container -->
+            <div class="canvas-container" style="display: flex; flex-direction: column; align-items: center; height: auto; padding-bottom: 2rem;">
+                <!-- Lienzo ajustado a 400px de alto para que el fractal quepa entero al nivel máximo -->
+                <canvas id="canvas-fractal" width="600" height="400" style="max-width: 100%; height: auto; background-color: var(--code-bg); border-radius: 6px;"></canvas>
+                
+                <div style="width: 100%; max-width: 500px; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label for="slider-profundidad" style="font-weight: bold;">Profundidad (Recursiones): <span id="val-profundidad" style="color: var(--accent-color);">6</span></label>
+                        <input type="range" id="slider-profundidad" min="1" max="10" value="6" style="width: 50%;">
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label for="slider-angulo" style="font-weight: bold;">Ángulo de ramas: <span id="val-angulo" style="color: var(--accent-color);">25°</span></label>
+                        <input type="range" id="slider-angulo" min="10" max="90" value="25" style="width: 50%;">
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const canvas = document.getElementById('canvas-fractal');
+                    const ctx = canvas.getContext('2d');
+                    const sliderProfundidad = document.getElementById('slider-profundidad');
+                    const sliderAngulo = document.getElementById('slider-angulo');
+                    const valProfundidad = document.getElementById('val-profundidad');
+                    const valAngulo = document.getElementById('val-angulo');
+
+                    function dibujarRama(x, y, longitud, angulo, profundidad) {
+                        if (profundidad === 0) return;
+
+                        ctx.beginPath();
+                        ctx.moveTo(x, y);
+
+                        const rad = angulo * Math.PI / 180;
+                        const finX = x + longitud * Math.sin(rad);
+                        const finY = y - longitud * Math.cos(rad);
+
+                        ctx.lineTo(finX, finY);
+                        
+                        ctx.lineWidth = profundidad * 0.8;
+                        ctx.strokeStyle = profundidad < 3 ? '#38a169' : 'var(--text-color)';
+                        ctx.stroke();
+
+                        const nuevoAngulo = parseInt(sliderAngulo.value);
+                        // Reducimos un poco la longitud (0.75) en cada paso para que quepa perfecto
+                        dibujarRama(finX, finY, longitud * 0.75, angulo - nuevoAngulo, profundidad - 1); 
+                        dibujarRama(finX, finY, longitud * 0.75, angulo + nuevoAngulo, profundidad - 1); 
+                    }
+
+                    function actualizarArbol() {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        
+                        valProfundidad.textContent = sliderProfundidad.value;
+                        valAngulo.textContent = sliderAngulo.value + '°';
+
+                        // Tronco inicial de 100px naciendo desde el centro-abajo del canvas
+                        dibujarRama(canvas.width / 2, canvas.height, 100, 0, parseInt(sliderProfundidad.value));
+                    }
+
+                    sliderProfundidad.addEventListener('input', actualizarArbol);
+                    sliderAngulo.addEventListener('input', actualizarArbol);
+
+                    actualizarArbol();
+                });
+            </script>
 
             <h3>5. Ejercicios de recursividad</h3>
             <p>Implementa las siguientes funciones utilizando metodologías recursivas en C#:</p>

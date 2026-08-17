@@ -53,7 +53,7 @@ html, body {
     line-height: 1.7;
     display: flex;
     overflow-x: hidden;
-    max-width: 100vw;
+    max-width: 100%;
     overscroll-behavior-x: none;
     /* Transición fluida al cambiar de tema */
     transition: background-color 0.3s ease, color 0.3s ease; 
@@ -158,8 +158,8 @@ aside ul li a:hover, aside ul li a.active {
 /* --- CONTENIDOR PRINCIPAL --- */
 main {
     margin-left: 280px;
-    padding: 3rem 4rem;
-    max-width: 900px;
+    padding: 3rem 2rem; /* Reducimos el padding lateral de 4rem a 2rem para no dejar tanto hueco */
+    max-width: 1200px; /* Aumentamos el límite para pantallas grandes, o puedes borrar esta línea para que ocupe el 100% */
     width: calc(100% - 280px);
     min-width: 0; 
 }

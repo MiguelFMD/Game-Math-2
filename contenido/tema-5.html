@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tema 5: Probabilidad y estadísitca para videojuegos</title>
+    <title>Tema 5: Probabilidad y Azar - Matemáticas para videojuegos II</title>
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
@@ -41,12 +41,135 @@
     <main>
         <section id="tema-5">
             <h2 class="section-title">
-                <i class="fa-solid fa-bookmark"></i> Tema 5: Probabilidad y estadísitca para videojuegos
+                <i class="fa-solid fa-bookmark"></i> Tema 5: Probabilidad, Azar y Psicología
             </h2>
             
+            <h3>1. El Azar y la Invención de la Probabilidad</h3>
+            <p>El azar es una parte fundamental del diseño de juegos porque implica incertidumbre, y la incertidumbre se traduce en sorpresas, el ingrediente secreto de la diversión. Sin embargo, el azar es engañoso; nuestra intuición suele equivocarse con él.</p>
             
+            <p>De hecho, la teoría de la probabilidad nació en 1654 exclusivamente para resolver un problema de diseño de juegos. El noble francés Antoine Gombaud (el <em>Chevalier de Méré</em>), un apostador empedernido, inventó dos juegos:</p>
+            <ul>
+                <li><strong>Juego 1:</strong> Tirar 1 dado cuatro veces. Gana si sale al menos un 6.</li>
+                <li><strong>Juego 2:</strong> Tirar 2 dados veinticuatro veces. Gana si sale al menos un 12 (doble seis).</li>
+            </ul>
+            
+            <p>El Chevalier calculó que en el Juego 1 su probabilidad de ganar era $4 \times (1/6) = 66\%$. Razonó que en el Juego 2, siendo la probabilidad de un doble seis de $1/36$, al tirar veinticuatro veces tendría $24 \times (1/36) = 66\%$. Según su lógica intuitiva, ¡ambos juegos eran iguales!</p>
+            
+            <p>Sin embargo, en el segundo juego perdía dinero a espuertas. Confundido, escribió a Blaise Pascal, quien a su vez consultó con Pierre de Fermat. Al resolver por qué el Chevalier perdía, estos dos genios fundaron la teoría de la probabilidad moderna.</p>
+
+            <h3>2. Las 10 Reglas Prácticas para Diseñadores de Juegos</h3>
+            <p>No necesitas matemáticas avanzadas para dominar el azar en tus juegos, basta con interiorizar estas diez reglas fundamentales:</p>
+
+            <ul>
+                <li><strong>1. El idioma universal:</strong> Las fracciones, decimales y porcentajes son lo mismo ($1/2 = 0,5 = 50\%$).</li>
+                <li><strong>2. De 0 a 1, ¡y ya está!:</strong> Las probabilidades solo van del $0\%$ al $100\%$. El error del Chevalier fue multiplicar de forma lineal; si tirase el dado 7 veces según su fórmula ($7 \times 1/6$), la probabilidad daría $117\%$, lo cual es matemáticamente imposible.</li>
+                <li><strong>3. La fórmula básica:</strong> La probabilidad es el <em>número de resultados buscados</em> dividido entre los <em>resultados posibles totales</em>. (Ej: probabilidad de sacar un número par en un dado: $3 / 6 = 50\%$).</li>
+                <li><strong>4. ¡Enumerar!:</strong> Si dudas, escribe a mano todas las combinaciones posibles y cuenta. Es un método infalible, aunque inviable si las combinaciones son millones.</li>
+            </ul>
+
+            <div class="callout definition">
+                <div class="callout-title"><i class="fa-solid fa-calculator"></i> Lógica de Sucesos: Sumar vs Multiplicar</div>
+                <ul>
+                    <li><strong>5. "O" significa Sumar:</strong> Si dos eventos son <em>mutuamente excluyentes</em> (no pueden suceder a la vez), sus probabilidades se suman. (Ej: probabilidad de sacar una figura O un As en la baraja: $12/52 + 4/52 = 16/52$).</li>
+                    <li><strong>6. "Y" significa Multiplicar:</strong> Si quieres calcular la probabilidad de que dos cosas sucedan a la vez, y <em>no</em> son mutuamente excluyentes, multiplicas. (Ej: probabilidad de que salga As Y que sea Diamante: $4/52 \times 13/52 = 1/52$).</li>
+                    <li><strong>7. El atajo (Uno menos "sucede" = "no sucede"):</strong> A menudo es más fácil calcular que algo NO pase. Con esto Pascal resolvió el Juego 2 del Chevalier: la probabilidad de no sacar un doble seis es $35/36$. En 24 tiradas, la probabilidad de perder siempre es $(35/36)^{24} = 50,86\%$. Por tanto, la probabilidad de ganar del Chevalier era solo del $49,14\%$ (¡por eso perdía dinero!).</li>
+                </ul>
+            </div>
+
+            <ul>
+                <li><strong>8. Sumar muestras lineales NO es lineal:</strong> Un dado de 20 caras (1d20) es lineal: todos los números tienen la misma probabilidad de salir ($5\%$). Pero si un jugador tira tres dados de 6 (3d6), los números intermedios (como el 10) saldrán muchísimo más a menudo que los extremos (3 o 18), creando una curva de campana. Los diseñadores usan esto para controlar el caos de las estadísticas.</li>
+                <li><strong>9. Método Monte Carlo:</strong> Cuando las matemáticas teóricas son demasiado complejas de escribir, usa la programación para hacer "probabilidad práctica". Pon a un ordenador a simular el juego un millón de veces y cuenta qué sucede (ej: descubrir qué casilla del Monopoly se pisa más).</li>
+                <li><strong>10. Ley de Gombaud (A los frikis les encanta presumir):</strong> Si un cálculo se te resiste, pide ayuda a un experto matemático planteándolo como un reto irresoluble. El Chevalier de Méré hizo historia con sus "preguntas estúpidas".</li>
+            </ul>
+
+            <h3>3. La Esperanza Matemática (Expected Value)</h3>
+            <p>La esperanza de una acción en un juego es la <strong>media de los valores de todos sus resultados posibles</strong>. Permite equilibrar mecánicas y anticipar los beneficios a largo plazo.</p>
+            
+            <p>Por ejemplo, imagina un juego de apuestas donde tiras 2 dados. Si sacas un 7 o un 11, ganas 5€. Si sacas cualquier otro número, pierdes 1€.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Resultado</th>
+                        <th>Probabilidad</th>
+                        <th>Recompensa / Castigo</th>
+                        <th>Cálculo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sacar 7</td>
+                        <td>6/36</td>
+                        <td>+5 €</td>
+                        <td>$+0,83 €$</td>
+                    </tr>
+                    <tr>
+                        <td>Sacar 11</td>
+                        <td>2/36</td>
+                        <td>+5 €</td>
+                        <td>$+0,28 €$</td>
+                    </tr>
+                    <tr>
+                        <td>Cualquier otro</td>
+                        <td>28/36</td>
+                        <td>-1 €</td>
+                        <td>$-0,78 €$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ESPERANZA TOTAL</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td><strong>+0,33 € por partida</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Como diseñador, sabes que este juego beneficia al jugador, quien ganará una media de 33 céntimos por cada tirada a largo plazo.</p>
+
+            <div class="callout challenge">
+                <div class="callout-title"><i class="fa-solid fa-triangle-exclamation"></i> Pondera el contexto en tus Esperanzas</div>
+                <p>Evalúa estos ataques de rol: <strong>Viento</strong> (4 de daño, 100% acierto), <strong>Bola de Fuego</strong> (5 de daño, 80% acierto) y <strong>Rayo</strong> (40 de daño, 20% acierto).</p>
+                <p>Matemáticamente, la esperanza del Viento es 4, la de la Bola de Fuego es 4, y la del Rayo es 8. Parecería que el Rayo es el mejor ataque. Pero, ¿y si luchas contra un enemigo que solo tiene 15 puntos de vida? El jugador no puede aprovechar los 40 puntos del Rayo. En ese contexto, la esperanza real del Rayo se desploma a <strong>3 puntos de media</strong> ($(15 \times 0.2) + (0 \times 0.8)$), haciéndolo estadísticamente la peor opción. Mide siempre las esperanzas considerando los límites reales del juego.</p>
+            </div>
+
+            <h3>4. El Elemento Humano y la Psicología del Riesgo</h3>
+            <p>La mente humana no procesa la estadística de forma matemática. Las estimaciones de los jugadores están sesgadas por el miedo, la percepción y el arrepentimiento.</p>
+
+            <h4>El Arrepentimiento y la "Paz Mental"</h4>
+            <p>El psicólogo Daniel Kahneman demostró que los seres humanos no siempre eligen la opción con la esperanza matemática más alta pidiendo a un grupo que eligiera entre dos juegos:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Juego</th>
+                        <th>Opciones y Probabilidades</th>
+                        <th>Esperanza Matemática</th>
+                        <th>Preferencia del Jugador</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Juego A</strong></td>
+                        <td>66% de ganar 2400€<br>33% de ganar 2500€<br>1% de ganar 0€</td>
+                        <td><strong>2409 €</strong></td>
+                        <td>Elegido por el <strong>18%</strong> de los sujetos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Juego B</strong></td>
+                        <td>100% de ganar 2400€ (Seguro)</td>
+                        <td>2400 €</td>
+                        <td>Elegido por el <strong>82%</strong> de los sujetos</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Aunque el Juego A otorga más dinero de media, los jugadores huyen de él para evitar la posibilidad de caer en ese doloroso $1\%$ y sentir que han arruinado una oportunidad de oro. Están dispuestos a "pagar" los 9€ de diferencia de esperanza solo por su paz mental y evitar el arrepentimiento.</p>
+            
+            <h4>Aversión a la Pérdida y Riesgos Perseguidos</h4>
+            <p>Paradójicamente, cuando se enfrentan a una <strong>pérdida segura</strong> en lugar de a una ganancia, los humanos hacen lo contrario: están dispuestos a asumir enormes riesgos apostando para evitar el dolor de perder. Este es el motor detrás de juegos como <em>Puzzle & Dragons</em>, donde los jugadores pagan dinero real para retener un tesoro que acaban de perder tras morir en una mazmorra.</p>
+
+            <p>Asimismo, los jugadores distorsionan las probabilidades de peligro. Tversky demostró en estudios que la gente subestima sistemáticamente las causas de muerte naturales (enfermedades) y sobreestima de forma brutal los peligros espectaculares (asesinatos, accidentes). En un juego, si un enemigo falla el 90% de las veces pero su ataque es muy espectacular, los jugadores sentirán (y se quejarán) de que "acierta demasiado", obligando al diseñador a ajustar las probabilidades no a la matemática pura, sino a la psicología humana.</p>
+
         </section>
-       
     </main>
 
     <script src="../main.js"></script>
