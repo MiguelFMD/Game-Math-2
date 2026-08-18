@@ -122,7 +122,292 @@
                 </li>
             </ul>
 
-            <p> AÑADIR AQUI ANIMACIONES DE OPERACIONES</p>
+            <h3>Visualización Interactiva: Construcción de un ABB</h3>
+            <p>Comprender cómo se organiza un Árbol Binario de Búsqueda es mucho más fácil viéndolo en acción. Utiliza este simulador para <strong>Insertar</strong> nuevos nodos, <strong>Buscar</strong> elementos o <strong>Eliminar</strong> datos existentes. Observa cómo el algoritmo siempre toma decisiones preguntando: <em>"¿Es mayor o menor que la raíz actual?"</em></p>
+
+            <div class="canvas-container" style="height: auto; padding-bottom: 2rem; display: flex; flex-direction: column; align-items: center;">
+                
+                <!-- Panel de controles -->
+                <div style="width: 100%; max-width: 800px; display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; padding: 1rem; background-color: var(--sidebar-bg); border: 1px solid var(--sidebar-border); border-radius: 6px; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <input type="number" id="abb-input" placeholder="Ej: 50" style="padding: 0.5rem; border: 1px solid var(--sidebar-border); border-radius: 4px; width: 80px;">
+                        <button id="btn-insert" style="padding: 0.5rem 1rem; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Insertar</button>
+                        <button id="btn-search" style="padding: 0.5rem 1rem; background-color: var(--accent-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Buscar</button>
+                        <button id="btn-delete" style="padding: 0.5rem 1rem; background-color: #e53e3e; color: white; border: none; border-radius: 4px; cursor: pointer;">Eliminar</button>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <label for="abb-speed" style="font-size: 0.9rem; font-weight: bold;">Velocidad:</label>
+                        <input type="range" id="abb-speed" min="1" max="10" value="5">
+                    </div>
+                </div>
+
+                <!-- Barra de estado / Consola -->
+                <div id="abb-msg" style="width: 100%; max-width: 800px; padding: 1rem; margin-bottom: 1rem; background-color: var(--code-bg); border-left: 4px solid var(--accent-color); font-family: monospace; font-size: 1rem; font-weight: bold; border-radius: 0 6px 6px 0;">
+                    Esperando acción...
+                </div>
+
+                <!-- Lienzo del árbol -->
+                <canvas id="canvas-abb" width="800" height="400" style="max-width: 100%; background-color: var(--bg-color); border: 1px solid var(--sidebar-border); border-radius: 6px;"></canvas>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const canvas = document.getElementById('canvas-abb');
+                    const ctx = canvas.getContext('2d');
+                    const input = document.getElementById('abb-input');
+                    const msg = document.getElementById('abb-msg');
+                    const speedSlider = document.getElementById('abb-speed');
+                    
+                    const btnInsert = document.getElementById('btn-insert');
+                    const btnSearch = document.getElementById('btn-search');
+                    const btnDelete = document.getElementById('btn-delete');
+
+                    let root = null;
+                    let isAnimating = false;
+
+                    // Colores del tema
+                    const colorNode = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-bg').trim();
+                    const colorText = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+                    const colorLine = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-border').trim();
+                    const colorHighlight = '#fbd38d'; // Naranja suave (Evaluando)
+                    const colorSuccess = '#68d391';   // Verde (Encontrado/Insertado)
+                    const colorDanger = '#fc8181';    // Rojo (Eliminado/Error)
+
+                    class Node {
+                        constructor(value) {
+                            this.value = value;
+                            this.left = null;
+                            this.right = null;
+                            this.x = 0;
+                            this.y = 0;
+                        }
+                    }
+
+                    // --- FUNCIONES DE DIBUJO ---
+                    function updatePositions(node, x, y, offset) {
+                        if (!node) return;
+                        node.x = x;
+                        node.y = y;
+                        // Ajustamos la separación horizontal para que los subárboles no colisionen
+                        updatePositions(node.left, x - offset, y + 60, offset / 2);
+                        updatePositions(node.right, x + offset, y + 60, offset / 2);
+                    }
+
+                    function drawTree(highlightNode = null, color = colorHighlight) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        if (root) {
+                            updatePositions(root, canvas.width / 2, 40, canvas.width / 4);
+                            drawNode(root, highlightNode, color);
+                        }
+                    }
+
+                    function drawNode(node, highlightNode, color) {
+                        if (!node) return;
+
+                        // Dibujar aristas primero para que queden por debajo
+                        ctx.strokeStyle = colorLine;
+                        ctx.lineWidth = 2;
+                        if (node.left) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(node.left.x, node.left.y);
+                            ctx.stroke();
+                            drawNode(node.left, highlightNode, color);
+                        }
+                        if (node.right) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(node.right.x, node.right.y);
+                            ctx.stroke();
+                            drawNode(node.right, highlightNode, color);
+                        }
+
+                        // Dibujar el círculo del nodo
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, 18, 0, Math.PI * 2);
+                        ctx.fillStyle = (node === highlightNode) ? color : colorNode;
+                        ctx.fill();
+                        ctx.strokeStyle = colorLine;
+                        ctx.stroke();
+
+                        // Dibujar el valor
+                        ctx.fillStyle = (node === highlightNode) ? '#000' : colorText;
+                        ctx.font = 'bold 14px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(node.value, node.x, node.y);
+                    }
+
+                    // --- LÓGICA DE ANIMACIÓN ---
+                    const getDelay = () => (11 - speedSlider.value) * 150;
+                    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+                    function setControls(state) {
+                        isAnimating = !state;
+                        btnInsert.disabled = !state;
+                        btnSearch.disabled = !state;
+                        btnDelete.disabled = !state;
+                        input.disabled = !state;
+                    }
+
+                    // --- OPERACIONES DEL ABB ---
+
+                    async function insertNode(val) {
+                        if (!root) {
+                            root = new Node(val);
+                            msg.innerText = `Árbol vacío. Insertando ${val} como nodo raíz.`;
+                            drawTree(root, colorSuccess);
+                            await sleep(getDelay() * 2);
+                            return;
+                        }
+
+                        let curr = root;
+                        while (true) {
+                            drawTree(curr, colorHighlight);
+                            if (val < curr.value) {
+                                msg.innerText = `¿${val} es menor que ${curr.value}? Sí, bajamos por la izquierda.`;
+                                await sleep(getDelay());
+                                if (!curr.left) {
+                                    curr.left = new Node(val);
+                                    drawTree(curr.left, colorSuccess);
+                                    msg.innerText = `Posición vacía encontrada. Insertando ${val} a la izquierda de ${curr.value}.`;
+                                    await sleep(getDelay() * 2);
+                                    break;
+                                }
+                                curr = curr.left;
+                            } else if (val > curr.value) {
+                                msg.innerText = `¿${val} es mayor que ${curr.value}? Sí, bajamos por la derecha.`;
+                                await sleep(getDelay());
+                                if (!curr.right) {
+                                    curr.right = new Node(val);
+                                    drawTree(curr.right, colorSuccess);
+                                    msg.innerText = `Posición vacía encontrada. Insertando ${val} a la derecha de ${curr.value}.`;
+                                    await sleep(getDelay() * 2);
+                                    break;
+                                }
+                                curr = curr.right;
+                            } else {
+                                msg.innerText = `El valor ${val} ya existe en el árbol. Los ABB clásicos no admiten duplicados.`;
+                                drawTree(curr, colorDanger);
+                                await sleep(getDelay() * 2);
+                                break;
+                            }
+                        }
+                    }
+
+                    async function searchNode(val) {
+                        if (!root) {
+                            msg.innerText = "El árbol está vacío.";
+                            return;
+                        }
+                        let curr = root;
+                        while (curr) {
+                            drawTree(curr, colorHighlight);
+                            if (val === curr.value) {
+                                msg.innerText = `¡Valor ${val} encontrado!`;
+                                drawTree(curr, colorSuccess);
+                                await sleep(getDelay() * 2);
+                                return;
+                            }
+                            if (val < curr.value) {
+                                msg.innerText = `${val} es menor que ${curr.value}. Buscamos en el subárbol izquierdo.`;
+                                curr = curr.left;
+                            } else {
+                                msg.innerText = `${val} es mayor que ${curr.value}. Buscamos en el subárbol derecho.`;
+                                curr = curr.right;
+                            }
+                            await sleep(getDelay());
+                        }
+                        msg.innerText = `Llegamos a una hoja y no encontramos el ${val}. El valor no existe.`;
+                        drawTree(); // Redibujar sin destacar
+                    }
+
+                    // Eliminar lógico sin animación compleja de sustitución (para V1)
+                    function deleteLogical(node, val) {
+                        if (!node) return null;
+                        if (val < node.value) {
+                            node.left = deleteLogical(node.left, val);
+                        } else if (val > node.value) {
+                            node.right = deleteLogical(node.right, val);
+                        } else {
+                            // Encontrado. Caso 1 y 2: Hoja o 1 hijo
+                            if (!node.left) return node.right;
+                            if (!node.right) return node.left;
+                            // Caso 3: Dos hijos (buscamos el sucesor inmediato inferior/superior)
+                            let temp = node.right;
+                            while (temp.left) temp = temp.left;
+                            node.value = temp.value;
+                            node.right = deleteLogical(node.right, temp.value);
+                        }
+                        return node;
+                    }
+
+                    async function deleteNode(val) {
+                        if (!root) return;
+                        
+                        // 1. Animamos la búsqueda
+                        let curr = root;
+                        let found = false;
+                        while (curr) {
+                            drawTree(curr, colorHighlight);
+                            if (val === curr.value) {
+                                found = true;
+                                break;
+                            }
+                            curr = (val < curr.value) ? curr.left : curr.right;
+                            msg.innerText = `Buscando nodo ${val} para eliminarlo...`;
+                            await sleep(getDelay());
+                        }
+
+                        if (!found) {
+                            msg.innerText = `El valor ${val} no está en el árbol.`;
+                            return;
+                        }
+
+                        // 2. Lo destacamos en rojo y eliminamos lógicamente
+                        drawTree(curr, colorDanger);
+                        msg.innerText = `¡Nodo ${val} encontrado! Aplicando algoritmo de eliminación (reestructurando)...`;
+                        await sleep(getDelay() * 2);
+                        
+                        root = deleteLogical(root, val);
+                        drawTree();
+                        msg.innerText = `Nodo ${val} eliminado y árbol reestructurado correctamente.`;
+                    }
+
+                    // --- EVENTOS DE BOTONES ---
+                    btnInsert.addEventListener('click', async () => {
+                        const val = parseInt(input.value);
+                        if (isNaN(val)) return;
+                        setControls(false);
+                        await insertNode(val);
+                        input.value = '';
+                        drawTree();
+                        msg.innerText = "Esperando nueva acción...";
+                        setControls(true);
+                    });
+
+                    btnSearch.addEventListener('click', async () => {
+                        const val = parseInt(input.value);
+                        if (isNaN(val)) return;
+                        setControls(false);
+                        await searchNode(val);
+                        drawTree();
+                        msg.innerText = "Esperando nueva acción...";
+                        setControls(true);
+                    });
+
+                    btnDelete.addEventListener('click', async () => {
+                        const val = parseInt(input.value);
+                        if (isNaN(val)) return;
+                        setControls(false);
+                        await deleteNode(val);
+                        setControls(true);
+                    });
+
+                    // Dibujo inicial (vacío)
+                    drawTree();
+                });
+            </script>
 
             <h3>6. Análisis de Eficiencia</h3>
 
