@@ -123,7 +123,7 @@
             </ul>
 
             <h3>Visualización Interactiva: Construcción de un ABB</h3>
-            <p>Comprender cómo se organiza un Árbol Binario de Búsqueda es mucho más fácil viéndolo en acción. Utiliza este simulador para <strong>Insertar</strong> nuevos nodos, <strong>Buscar</strong> elementos o <strong>Eliminar</strong> datos existentes. Observa cómo el algoritmo siempre toma decisiones preguntando: <em>"¿Es mayor o menor que la raíz actual?"</em></p>
+            <p>Comprender cómo se organiza un Árbol Binario de Búsqueda es mucho más fácil viéndolo en acción. Utiliza este simulador para <strong>Insertar</strong> nuevos nodos, <strong>Buscar</strong> elementos o <strong>Eliminar</strong> datos existentes. Observa cómo el algoritmo toma decisiones y, en especial, cómo resuelve los 3 casos de la <strong>eliminación</strong>.</p>
 
             <div class="canvas-container" style="height: auto; padding-bottom: 2rem; display: flex; flex-direction: column; align-items: center;">
                 
@@ -142,7 +142,7 @@
                 </div>
 
                 <!-- Barra de estado / Consola -->
-                <div id="abb-msg" style="width: 100%; max-width: 800px; padding: 1rem; margin-bottom: 1rem; background-color: var(--code-bg); border-left: 4px solid var(--accent-color); font-family: monospace; font-size: 1rem; font-weight: bold; border-radius: 0 6px 6px 0;">
+                <div id="abb-msg" style="width: 100%; max-width: 800px; padding: 1rem; margin-bottom: 1rem; background-color: var(--code-bg); border-left: 4px solid var(--accent-color); font-family: monospace; font-size: 0.95rem; font-weight: bold; border-radius: 0 6px 6px 0;">
                     Esperando acción...
                 </div>
 
@@ -188,23 +188,21 @@
                         if (!node) return;
                         node.x = x;
                         node.y = y;
-                        // Ajustamos la separación horizontal para que los subárboles no colisionen
                         updatePositions(node.left, x - offset, y + 60, offset / 2);
                         updatePositions(node.right, x + offset, y + 60, offset / 2);
                     }
 
-                    function drawTree(highlightNode = null, color = colorHighlight) {
+                    function drawTree(highlightNode = null, color = colorHighlight, secondaryHighlight = null, secondaryColor = colorSuccess) {
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                         if (root) {
                             updatePositions(root, canvas.width / 2, 40, canvas.width / 4);
-                            drawNode(root, highlightNode, color);
+                            drawNode(root, highlightNode, color, secondaryHighlight, secondaryColor);
                         }
                     }
 
-                    function drawNode(node, highlightNode, color) {
+                    function drawNode(node, highlightNode, color, secondaryHighlight, secondaryColor) {
                         if (!node) return;
 
-                        // Dibujar aristas primero para que queden por debajo
                         ctx.strokeStyle = colorLine;
                         ctx.lineWidth = 2;
                         if (node.left) {
@@ -212,33 +210,39 @@
                             ctx.moveTo(node.x, node.y);
                             ctx.lineTo(node.left.x, node.left.y);
                             ctx.stroke();
-                            drawNode(node.left, highlightNode, color);
+                            drawNode(node.left, highlightNode, color, secondaryHighlight, secondaryColor);
                         }
                         if (node.right) {
                             ctx.beginPath();
                             ctx.moveTo(node.x, node.y);
                             ctx.lineTo(node.right.x, node.right.y);
                             ctx.stroke();
-                            drawNode(node.right, highlightNode, color);
+                            drawNode(node.right, highlightNode, color, secondaryHighlight, secondaryColor);
                         }
 
-                        // Dibujar el círculo del nodo
                         ctx.beginPath();
                         ctx.arc(node.x, node.y, 18, 0, Math.PI * 2);
-                        ctx.fillStyle = (node === highlightNode) ? color : colorNode;
+                        
+                        // Selección de colores para la animación
+                        if (node === highlightNode) {
+                            ctx.fillStyle = color;
+                        } else if (node === secondaryHighlight) {
+                            ctx.fillStyle = secondaryColor;
+                        } else {
+                            ctx.fillStyle = colorNode;
+                        }
+                        
                         ctx.fill();
                         ctx.strokeStyle = colorLine;
                         ctx.stroke();
 
-                        // Dibujar el valor
-                        ctx.fillStyle = (node === highlightNode) ? '#000' : colorText;
+                        ctx.fillStyle = (node === highlightNode || node === secondaryHighlight) ? '#000' : colorText;
                         ctx.font = 'bold 14px sans-serif';
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
                         ctx.fillText(node.value, node.x, node.y);
                     }
 
-                    // --- LÓGICA DE ANIMACIÓN ---
                     const getDelay = () => (11 - speedSlider.value) * 150;
                     const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -250,8 +254,7 @@
                         input.disabled = !state;
                     }
 
-                    // --- OPERACIONES DEL ABB ---
-
+                    // --- INSERTAR ---
                     async function insertNode(val) {
                         if (!root) {
                             root = new Node(val);
@@ -270,7 +273,7 @@
                                 if (!curr.left) {
                                     curr.left = new Node(val);
                                     drawTree(curr.left, colorSuccess);
-                                    msg.innerText = `Posición vacía encontrada. Insertando ${val} a la izquierda de ${curr.value}.`;
+                                    msg.innerText = `Posición vacía. Insertando ${val} a la izquierda de ${curr.value}.`;
                                     await sleep(getDelay() * 2);
                                     break;
                                 }
@@ -281,13 +284,13 @@
                                 if (!curr.right) {
                                     curr.right = new Node(val);
                                     drawTree(curr.right, colorSuccess);
-                                    msg.innerText = `Posición vacía encontrada. Insertando ${val} a la derecha de ${curr.value}.`;
+                                    msg.innerText = `Posición vacía. Insertando ${val} a la derecha de ${curr.value}.`;
                                     await sleep(getDelay() * 2);
                                     break;
                                 }
                                 curr = curr.right;
                             } else {
-                                msg.innerText = `El valor ${val} ya existe en el árbol. Los ABB clásicos no admiten duplicados.`;
+                                msg.innerText = `El valor ${val} ya existe en el árbol.`;
                                 drawTree(curr, colorDanger);
                                 await sleep(getDelay() * 2);
                                 break;
@@ -295,6 +298,7 @@
                         }
                     }
 
+                    // --- BUSCAR ---
                     async function searchNode(val) {
                         if (!root) {
                             msg.innerText = "El árbol está vacío.";
@@ -310,68 +314,117 @@
                                 return;
                             }
                             if (val < curr.value) {
-                                msg.innerText = `${val} es menor que ${curr.value}. Buscamos en el subárbol izquierdo.`;
+                                msg.innerText = `${val} es menor que ${curr.value}. Izquierda.`;
                                 curr = curr.left;
                             } else {
-                                msg.innerText = `${val} es mayor que ${curr.value}. Buscamos en el subárbol derecho.`;
+                                msg.innerText = `${val} es mayor que ${curr.value}. Derecha.`;
                                 curr = curr.right;
                             }
                             await sleep(getDelay());
                         }
-                        msg.innerText = `Llegamos a una hoja y no encontramos el ${val}. El valor no existe.`;
-                        drawTree(); // Redibujar sin destacar
+                        msg.innerText = `El valor ${val} no existe en el árbol.`;
+                        drawTree();
                     }
 
-                    // Eliminar lógico sin animación compleja de sustitución (para V1)
-                    function deleteLogical(node, val) {
-                        if (!node) return null;
-                        if (val < node.value) {
-                            node.left = deleteLogical(node.left, val);
-                        } else if (val > node.value) {
-                            node.right = deleteLogical(node.right, val);
-                        } else {
-                            // Encontrado. Caso 1 y 2: Hoja o 1 hijo
-                            if (!node.left) return node.right;
-                            if (!node.right) return node.left;
-                            // Caso 3: Dos hijos (buscamos el sucesor inmediato inferior/superior)
-                            let temp = node.right;
-                            while (temp.left) temp = temp.left;
-                            node.value = temp.value;
-                            node.right = deleteLogical(node.right, temp.value);
-                        }
-                        return node;
-                    }
-
+                    // --- ELIMINAR ANIMADO (V2) ---
                     async function deleteNode(val) {
-                        if (!root) return;
-                        
-                        // 1. Animamos la búsqueda
-                        let curr = root;
-                        let found = false;
-                        while (curr) {
-                            drawTree(curr, colorHighlight);
-                            if (val === curr.value) {
-                                found = true;
-                                break;
-                            }
-                            curr = (val < curr.value) ? curr.left : curr.right;
-                            msg.innerText = `Buscando nodo ${val} para eliminarlo...`;
-                            await sleep(getDelay());
-                        }
-
-                        if (!found) {
-                            msg.innerText = `El valor ${val} no está en el árbol.`;
+                        if (!root) {
+                            msg.innerText = "El árbol está vacío.";
                             return;
                         }
 
-                        // 2. Lo destacamos en rojo y eliminamos lógicamente
+                        // 1. Fase de búsqueda
+                        let parent = null;
+                        let curr = root;
+                        let isLeftChild = false;
+
+                        while (curr) {
+                            drawTree(curr, colorHighlight);
+                            msg.innerText = `Buscando nodo ${val} para eliminarlo...`;
+                            await sleep(getDelay());
+
+                            if (val === curr.value) break;
+
+                            parent = curr;
+                            if (val < curr.value) {
+                                isLeftChild = true;
+                                curr = curr.left;
+                            } else {
+                                isLeftChild = false;
+                                curr = curr.right;
+                            }
+                        }
+
+                        if (!curr) {
+                            msg.innerText = `El valor ${val} no está en el árbol.`;
+                            drawTree();
+                            return;
+                        }
+
                         drawTree(curr, colorDanger);
-                        msg.innerText = `¡Nodo ${val} encontrado! Aplicando algoritmo de eliminación (reestructurando)...`;
+                        msg.innerText = `¡Nodo ${val} encontrado! Analizando sus hijos para aplicar el caso correcto...`;
                         await sleep(getDelay() * 2);
-                        
-                        root = deleteLogical(root, val);
+
+                        // CASO 1: Es una hoja (0 hijos)
+                        if (!curr.left && !curr.right) {
+                            msg.innerText = `CASO 1: El nodo es una hoja (0 hijos). Se elimina directamente.`;
+                            await sleep(getDelay() * 2);
+                            
+                            if (!parent) root = null;
+                            else if (isLeftChild) parent.left = null;
+                            else parent.right = null;
+                        }
+                        // CASO 2: Tiene 1 hijo
+                        else if (!curr.left || !curr.right) {
+                            let child = curr.left ? curr.left : curr.right;
+                            drawTree(curr, colorDanger, child, colorSuccess);
+                            msg.innerText = `CASO 2: Tiene 1 hijo (${child.value}). El hijo sube a ocupar su lugar.`;
+                            await sleep(getDelay() * 3);
+
+                            if (!parent) root = child;
+                            else if (isLeftChild) parent.left = child;
+                            else parent.right = child;
+                        }
+                        // CASO 3: Tiene 2 hijos
+                        else {
+                            msg.innerText = `CASO 3: Tiene 2 hijos. Buscando el sucesor inmediato (menor de los mayores)...`;
+                            await sleep(getDelay() * 2);
+
+                            let successorParent = curr;
+                            let successor = curr.right;
+                            
+                            drawTree(curr, colorDanger, successor, colorHighlight);
+                            msg.innerText = `Paso 1: Vamos un paso a la derecha al nodo ${successor.value}...`;
+                            await sleep(getDelay() * 1.5);
+
+                            while (successor.left) {
+                                successorParent = successor;
+                                successor = successor.left;
+                                drawTree(curr, colorDanger, successor, colorHighlight);
+                                msg.innerText = `Paso 2: Bajamos todo lo posible a la izquierda... analizando ${successor.value}`;
+                                await sleep(getDelay() * 1.5);
+                            }
+
+                            drawTree(curr, colorDanger, successor, colorSuccess);
+                            msg.innerText = `¡El sucesor es ${successor.value}! Intercambiamos los valores.`;
+                            await sleep(getDelay() * 2);
+
+                            // Intercambio visual
+                            curr.value = successor.value;
+                            drawTree(successor, colorDanger, curr, colorSuccess); 
+                            msg.innerText = `Valor copiado a la raíz. Ahora eliminamos el nodo redundante (que queda como hoja o con 1 hijo).`;
+                            await sleep(getDelay() * 2);
+
+                            // Eliminación del sucesor original
+                            if (successorParent.left === successor) {
+                                successorParent.left = successor.right;
+                            } else {
+                                successorParent.right = successor.right;
+                            }
+                        }
+
                         drawTree();
-                        msg.innerText = `Nodo ${val} eliminado y árbol reestructurado correctamente.`;
+                        msg.innerText = `Nodo eliminado y árbol reestructurado correctamente.`;
                     }
 
                     // --- EVENTOS DE BOTONES ---
@@ -401,11 +454,33 @@
                         if (isNaN(val)) return;
                         setControls(false);
                         await deleteNode(val);
+                        input.value = '';
                         setControls(true);
                     });
 
-                    // Dibujo inicial (vacío)
-                    drawTree();
+                    // Inicializamos el árbol con algunos valores predefinidos para que no empiece vacío
+                    async function initTree() {
+                        const initValues = [50, 30, 70, 20, 40, 60, 80];
+                        for(let val of initValues) {
+                            if(!root) root = new Node(val);
+                            else {
+                                let curr = root;
+                                while (true) {
+                                    if (val < curr.value) {
+                                        if (!curr.left) { curr.left = new Node(val); break; }
+                                        curr = curr.left;
+                                    } else {
+                                        if (!curr.right) { curr.right = new Node(val); break; }
+                                        curr = curr.right;
+                                    }
+                                }
+                            }
+                        }
+                        drawTree();
+                        msg.innerText = "Árbol inicial cargado. Prueba a eliminar el 50 para ver el Caso 3.";
+                    }
+                    
+                    initTree();
                 });
             </script>
 
