@@ -19,6 +19,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <!-- Highlight.js (Resaltado de sintaxis) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Soporte adicional para C# si lo necesitas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
             onload="renderMathInElement(document.body, {
@@ -53,7 +58,7 @@
             <p>En matemáticas existen numerosas funciones que tienen carácter recursivo; de igual modo numerosas circunstancias y situaciones de la vida ordinaria tienen 
                 carácter recursivo, por ejemplo, el factorial de un número o Fibonacci.</p>
             <p>Hasta el momento, casi siempre hemos visto métodos que llaman a otras funciones distintas. Por ejemplo:</p>
-            <pre><code>private void Func1() {
+            <pre><code class="language-csharp">private void Func1() {
     print("Func1 llamada");
     Func2();
 }
@@ -73,7 +78,7 @@ private void Func2() {
                 <p>"Es como mirarse en dos espejos enfrentados: la imagen se repite una y otra vez, hasta que algo (la distancia o el límite visual) la detiene."</p>
             </div>
 
-            <pre><code>private void FuncRecursiva() {
+            <pre><code class="language-csharp">private void FuncRecursiva() {
     // 1. Si llegamos al caso base, acabamos
     return;
     
@@ -99,7 +104,7 @@ private void Func2() {
 
             <h4>Solución Iterativa</h4>
             <p>El algoritmo que resuelve el factorial de forma iterativa utiliza un bucle. Como vimos en el Tema 1, este algoritmo tiene un coste temporal $O(n)$, ya que es directamente proporcional al tamaño del número $n$.</p>
-            <pre><code>int factorial_iterativo(int n) {
+            <pre><code class="language-csharp">int factorial_iterativo(int n) {
     int resultado = 1;
     for (int i = 2; i &lt;= n; i++) {
         resultado *= i;
@@ -109,7 +114,7 @@ private void Func2() {
 
             <h4>Solución Recursiva</h4>
             <p>El método de definición de una función en términos de sí misma se llama en matemáticas <strong>definición inductiva</strong>. El caso base es esencial para detener la cadena de llamadas.</p>
-            <pre><code>int factorial_recursivo(int n) {
+            <pre><code class="language-csharp">int factorial_recursivo(int n) {
     // Condición de terminación (Caso Base)
     if (n == 1 || n == 0) return 1;
     
@@ -130,14 +135,14 @@ private void Func2() {
                 <li><strong>Caso base:</strong> $a \cdot b = a \quad \text{si } b = 1$</li>
                 <li><strong>Caso recursivo:</strong> $a \cdot b = a + (a \cdot (b-1)) \quad \text{si } b > 1$</li>
             </ul>
-            <pre><code>int producto(int a, int b) {
+            <pre><code class="language-csharp">int producto(int a, int b) {
     if (b == 1) return a;
     return a + producto(a, b - 1);
 }</code></pre>
 
             <h4>Serie de Fibonacci</h4>
             <p>La serie comienza con 0 y 1, y cada elemento posterior es la suma de los dos anteriores. La definición recursiva requiere <strong>dos llamadas a sí misma</strong> por cada iteración:</p>
-            <pre><code>int fibonacci_recursivo(int n) {
+            <pre><code class="language-csharp">int fibonacci_recursivo(int n) {
     if (n &lt;= 1) return n;
     return fibonacci_recursivo(n - 1) + fibonacci_recursivo(n - 2);
 }</code></pre>
@@ -145,31 +150,32 @@ private void Func2() {
 
             <h4> Búsqueda binaria recursiva </h4>
             <p> A continuación se muestra el código de la <a href="busqueda-binaria">búsqueda binaria</a>, que vimos en el tema anterior,
-            pero de manera recuriva. Analiza sus costes, temporal y espacial, y compáralo con su versión iterativa </p>
-            <pre><code>// Búsqueda Binaria Recursiva: Coste Temporal O(log n) | Espacial O(log n)
-            int BusquedaBinariaRecursiva(int[] array, int objetivo, int izquierda, int derecha) {
-                // Condición de terminación: si los índices se cruzan, el elemento no existe
-                if (izquierda &gt; derecha) {
-                    return -1; 
-                }
+            pero de manera recursiva. Analiza sus costes, temporal y espacial, y compáralo con su versión iterativa </p>
+            <pre><code class="language-csharp">// Búsqueda Binaria Recursiva: Coste Temporal O(log n) | Espacial O(log n)
+int BusquedaBinariaRecursiva(int[] array, int objetivo, int izquierda, int derecha) {
+    // Condición de terminación: si los índices se cruzan, el elemento no existe
+    if (izquierda &gt; derecha) {
+        return -1; 
+    }
 
-                // Calculamos el punto medio
-                int medio = izquierda + (derecha - izquierda) / 2;
+    // Calculamos el punto medio
+    int medio = izquierda + (derecha - izquierda) / 2;
 
-                // Caso base de éxito: hemos encontrado el elemento
-                if (array[medio] == objetivo) {
-                    return medio; 
-                }
+    // Caso base de éxito: hemos encontrado el elemento
+    if (array[medio] == objetivo) {
+        return medio; 
+    }
 
-                // Caso recursivo: el objetivo es mayor, buscamos en la mitad derecha
-                if (array[medio] &lt; objetivo) {
-                    return BusquedaBinariaRecursiva(array, objetivo, medio + 1, derecha);
-                }
-                // Caso recursivo: el objetivo es menor, buscamos en la mitad izquierda
-                else {
-                    return BusquedaBinariaRecursiva(array, objetivo, izquierda, medio - 1);
-                }
-            }</code></pre>
+    // Caso recursivo: el objetivo es mayor, buscamos en la mitad derecha
+    if (array[medio] &lt; objetivo) {
+        return BusquedaBinariaRecursiva(array, objetivo, medio + 1, derecha);
+    }
+    // Caso recursivo: el objetivo es menor, buscamos en la mitad izquierda
+    else {
+        return BusquedaBinariaRecursiva(array, objetivo, izquierda, medio - 1);
+    }
+}
+</code></pre>
 
             <div class="callout definition">
                 <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> También importa la legibilidad</div>
@@ -276,6 +282,7 @@ private void Func2() {
     <script src="../main.js"></script>
     <script>
         cargarMenu("../"); // Carga el índice dinámicamente ajustando las rutas
+        hljs.highlightAll();
     </script>
 </body>
 </html>

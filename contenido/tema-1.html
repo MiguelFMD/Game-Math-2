@@ -19,6 +19,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+     <!-- Highlight.js (Resaltado de sintaxis) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Soporte adicional para C# si lo necesitas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
             onload="renderMathInElement(document.body, {
@@ -119,7 +124,7 @@
             <h4>Ejemplo: La Secuencia de Fibonacci</h4>
             <p>Comparar la versión recursiva e iterativa de Fibonacci ilustra perfectamente esta diferencia:</p>
 
-            <pre><code>// Fibonacci Iterativo: Coste Temporal O(n) | Espacial O(1)
+            <pre><code class="language-csharp">// Fibonacci Iterativo: Coste Temporal O(n) | Espacial O(1)
 int FibonacciIterativo(int n) {
     int a = 0, b = 1, temp; // Usa variables simples
     for (int i = 2; i <= n; i++) {
@@ -222,7 +227,7 @@ int FibonacciRecursivo(int n) {
             <p> Este algoritmo requiere que el vector esté previamente ordenado. Su gran ventaja es que divide el espacio de búsqueda a la mitad en cada paso, 
                 logrando un coste temporal hiperrápido de $O(\log n)$.</p>
             
-                <pre><code>// Búsqueda Binaria Iterativa: Coste Temporal O(log n) | Espacial O(1)
+                <pre><code class="language-csharp">// Búsqueda Binaria Iterativa: Coste Temporal O(log n) | Espacial O(1)
             int BusquedaBinaria(int[] array, int objetivo) {
                 int izquierda = 0;
                 int derecha = array.Length - 1;
@@ -266,6 +271,7 @@ int FibonacciRecursivo(int n) {
     <script src="../main.js"></script>
     <script>
         cargarMenu("../"); // Le indicamos al menú que también debe subir un nivel
+        hljs.highlightAll();
     </script>
 </body>
 </html>
