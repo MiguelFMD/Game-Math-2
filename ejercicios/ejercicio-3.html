@@ -20,6 +20,10 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Soporte adicional para C# y C++ si lo necesitas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
             onload="renderMathInElement(document.body, {
                 delimiters: [
@@ -47,13 +51,100 @@
                 <i class="fa-solid fa-dumbbell"></i> Ejercicio 3: Esperanza matemática bajo contexto
             </h2>
 
+            <h3>Introducción: Repaso de la esperanza en la brisca</h3>
+
             <p>Vamos a añadir una mecánica nueva a nuestro juego de la brisca, consiste en lo siguiente: cada jugador puede descartar una carta en cada turno
                 y robar una del mazo de robo. ¿Cuál sería el valor esperado de robar una carta aleatoria al inicio de la partida? $E[X] = 120 / 40 = 3$
             </p>
 
             <p>Pongamos un ejemplo, supongamos que un jugador tiene una Sota (vale 2 puntos). ¿Tiene una esperanza positiva de cambiar la Sota a ciegas por la primera
-                carta del mazo? Sí, porque 3 > 2
+                carta del mazo? Sí, porque $3$ (valor esperado de la carta aleatoria) > $2$ (valor de la Sota). ¿Y en el caso de que sea un Rey (4 puntos)? $E[ganancia] =
+                3 - 4 = -1$ que es esperanza negativa.
             </p>
+
+            <p><strong>Haz una tabla como la que hicimos en clase para que veas la esperanza de ganancia de cada carta.</strong>. Puedes hacerla a mano o con Excel/Google Sheets.
+                Verás que en la brisca las probabilidades son uniformes
+                por ejemplo, todas las cartas tienen la misma probabilidad de salir si el mazo está completo. También que el 70% del valor total se concentra en 8 cartas (ases
+                y treses) que entre ambos suman 84 puntos de los 120 puntos.
+            </p>
+
+            <h3>Rebalanceo</h3>
+
+            <p>Vamos a hacer una pequeña simulación en Unity de la probabilidad de las cartas y sus esperanzas de valor.</p>
+
+            <h4>Preparación de escena</h4>
+            
+            <ol>
+                <li>Abre el proyecto de Unity de la asignatura y crea una escena vacía en tu repositorio.</li>
+                <li>Crea un script, llámalo "ExpectedValue" y reemplaza todo el código por el que encontrarás más abajo (puedes copiar y pegar). Acuérdate de guardar.</li>
+                <li>Arrastra el script a tu nueva escena, se creará un <i>GameObject</i> llamado "ExpectedValue" con el script de componente que acabas de crear.</li>
+            </ol>
+
+            <pre><code class="language-csharp">
+using UnityEngine;
+
+public class ExpectedValue : MonoBehaviour
+{
+    [Header ("Numero de cartas")]
+    [SerializeField] private int n_As = 4;
+    [SerializeField] private int n_Tres = 4, n_Rey = 4, n_Caballo = 4, n_Sota = 4, n_Siete = 4, n_Seis = 4, n_Cinco = 4, n_Cuatro = 4, n_Dos = 4;
+    
+    [Header ("Valores de cartas")]
+    [SerializeField] private float v_As = 11;
+    [SerializeField] private float v_Tres = 10, v_Rey = 4, v_Caballo = 3, v_Sota = 2, v_Siete = 0, v_Seis = 0, v_Cinco = 0, v_Cuatro = 0, v_Dos = 0;
+}
+            </code></pre>
+
+            <h4>Primeros cálculos</h4>
+
+            <p>El script, por ahora, solo asigna valores de cuántas cartas hay, y el valor que tiene cada carta. Ahora mismo son los predeterminados de la brisca.
+                Se le ponen unos valores predeterminados dentro del script, pero si seleccionas el <i>GameObject</i> verás que puedes cambiar los valores desde fuera del script,
+                el valor que pongas ahí se sobreescribirá al que haya inicialmente en el script, es decir, el que salga ahí es el que cogerá Unity.
+            </p>
+
+            <p>Vamos a calcular la probabilidad de cada carta cada vez que ejecutamos la escena, es decir, cada vez que pulsamos "Play". Para ello:</p>
+
+            <ul>
+                <li>Deberás usar la función " void Start" para Unity ejecute los cálculos</li>
+                <li>Usa print para imprimir en la consola las diferentes probabilidades</li>
+            </ul>
+
+            <p>Cuando lo tengas, podemos también calcular la esperanza multiplicando la probabilidad con el valor. Añade que imprima en la consola la esperanza de valor
+                de cada carta.
+            </p>
+
+            <p>Prueba a cambiar los valores del componente y ver que cada vez que ejecutas, las probabilidades y esperanzas cambian.</p>
+
+            <h4>Crear botones</h4>
+
+            <p>Vamos a crear un botón que nos calcule las probabilidades sin tener que darle a "Play" todo el rato. Para ello:</p>
+
+            <ol>
+                <li>Copia el código que verás más abajo, y pégalo después de la función Start.</li>
+                <li>Copia y pega la parte del código que calcula las probabilidades que hiciste en el Start (bórralas del Start), y ponlo dentro de la función nueva que has creado. Ahora
+                    tenemos una función que al llamarla/ejecutarla calcula las probabilidades. Acuérdate de guardar.
+                </li>
+                <li>Para el botón: Haz click derecho en la jerarquía de la escena. Busca UI(Canvas) > Button - TextMeshPro (si lo haces en otro proyecto puede que te pida instalar
+                    el paquete TextMeshPro (TMP), en este caso ya estará descargado). Esto nos creará un Canvas (necesario para visualizar los elementos de la UI como
+                    los botones), y tendrá como hijo un "Button".</li>
+                <li>Despliega el Canvas y selecciona el botón. En el componente RectTransform (es como el transform pero en 2D), pon la Pos X y Pos Y a 0 para que el botón se ponga en medio
+                    de la pantalla.</li>
+                <li>Ahora ve al componente "Button", al final verás una sección que pone "On Click ()". Dale al + y arrastra el objeto "ExpectedValue" donde pone "None (Object)".</li>
+                <li>Si lo has arrastrado bien, el desplegable "No funcion" de al lado se habrá desbloqueado. Haz click y elige ExpectedValue > CalcularProbabilidades.</li>
+                <li>Despliega el objeto "Button", que tiene como hijo un "Text". En los componentes de ese Text hay un "Text input" que puedes cambiar para que aparezca otro texto.
+                    ponle "CalcularProbabilidades"
+                </li>
+            </ol>
+
+            <p>Ahora cuando pulses "Play", en la consola solo debería aparecer el calculo de las esperanzas. Solo cuando pulsas el botón, </p>
+
+<pre><code class="language-csharp">
+public void CalcularProbabilidades()
+{
+    //PONER AQUI EL CALCULO DE PROBABILIDADES QUE ESTABA EN EL START
+}
+            </code></pre>
+
             
             
 
@@ -63,6 +154,7 @@
     <script src="../main.js"></script>
     <script>
         cargarMenu("../"); // Le indicamos al menú que también debe subir un nivel
+        hljs.highlightAll();
     </script>
 </body>
 </html>
