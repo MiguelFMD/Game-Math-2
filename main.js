@@ -27,8 +27,8 @@ function cargarMenu(rutaBase) {
         <ul>
             <li><a href="${rutaBase}ejercicios/ejercicio-0.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 0: Introducción al repositorio</a></li>
             <li><a href="${rutaBase}ejercicios/ejercicio-1.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 1: Actualizar proyecto y entregas</a></li>
-            <li><a href="${rutaBase}ejercicios/ejercicio-2.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 2: Practicando con Random.Range</a></li>
-            
+            <li><a href="${rutaBase}ejercicios/ejercicio-2.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 2: Ejercicios de probabilidad básica</a></li>
+            <li><a href="${rutaBase}ejercicios/ejercicio-3.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 3: Esperanza matemática</a></li>
         </ul>
     `;
 

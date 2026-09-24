@@ -44,20 +44,17 @@
     <main>
         <section id="ejercicio-2">
             <h2 class="section-title">
-                <i class="fa-solid fa-dumbbell"></i> Ejercicio 2: Ejercicios de probabilidad básica
+                <i class="fa-solid fa-dumbbell"></i> Ejercicio 3: Esperanza matemática bajo contexto
             </h2>
 
-            <p>Programa los siguientes métodos. Para algunos necesitarás utilizar <a href="https://docs.unity3d.com/es/530/ScriptReference/Random.Range.html"> Random.Range</a> de Unity. </p>
-            <ul>
-                <li>Un método que reciba un <i>float</i> (de 0.0 a 1.0, si no, no hará nada) y devuelva el equivalente en <i>%</i> de probabilidad.</li>
-                <li>Un método que reciba un <i>%</i> de probabilidad (de 0% a 100%, si no, no hará nada) y devuelva el equivalente en decimales (float)</li>
-                <li>Un método que calcule la probabilidad con la fórmula básica. Recibirá <i>número de resultados buscados</i> entre <i>número de resultados posibles</i>.
-                    Se devolverá en formato <i>%</i>.</li>
-                <li>Un método que calcule la probabilidad que suceda un evento O de que suceda otro. (Ej: probabilidad de sacar una figura O un As en la baraja: 12/52 + 4/52 = 16/52).</li>
-                <li>Un método que calcule la probabilidad que suceda un evento Y de que suceda otro. (Ej: probabilidad de sacar un As Y de que sea diamante: 4/52 x 13/52 = 16/52).</li>
-                <li>Un método que sea como un dado de seis lados (D6). Al llamar al método devolverá un número entre el 1 y el 6 inclusive.</li>
-                <li>Un método que se le pase por parámetro una <i>cantidad de lados</i> y devuelva un número entre el 1 y la cantidad de lados inclusive.</li>   
-            </ul>
+            <p>Vamos a añadir una mecánica nueva a nuestro juego de la brisca, consiste en lo siguiente: cada jugador puede descartar una carta en cada turno
+                y robar una del mazo de robo. ¿Cuál sería el valor esperado de robar una carta aleatoria al inicio de la partida? $E[X] = 120 / 40 = 3$
+            </p>
+
+            <p>Pongamos un ejemplo, supongamos que un jugador tiene una Sota (vale 2 puntos). ¿Tiene una esperanza positiva de cambiar la Sota a ciegas por la primera
+                carta del mazo? Sí, porque 3 > 2
+            </p>
+            
             
 
         </section>
