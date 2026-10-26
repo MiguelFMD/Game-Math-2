@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matemáticas para videojuegos II</title>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add('dark-mode');
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+            }
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Soporte adicional para C# y C++ si lo necesitas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                throwOnError : false
+            });">
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+    <aside></aside>
+
+    <main>
+        <section id="ejercicio-4">
+            <h2 class="section-title">
+                <i class="fa-solid fa-dumbbell"></i> Ejercicio 4: Cambiar componentes de descendientes
+            </h2>
+            
+            <h3>Problema inicial: Acceder al componente</h3>
+
+            <p>Tenemos el siguiente problema: queremos cambiar la imagen/sprite de los botones de un Canvas cuando se empieza
+            una partida. Una manera de hacerlo es recorrer los hijos del canvas, comprobando que ese hijo tiene el componente
+            "Button", si lo tiene, le asignamos un sprite nuevo.</p>
+
+            <p>El siguiente código muestra como acceder a los hijos de un transform al que se le añade el script "Example".
+            Prueba a crear un script con este código y recuerda añadirle hijos al objeto para ver qué ocurre.</p>
+
+            
+            <pre><code class="language-csharp">
+using UnityEngine;
+
+public class Example : MonoBehaviour
+{
+    void Start()
+    {
+        foreach (Transform child in transform)
+        {
+            print(child.name);
+        }
+    }
+}
+
+            </code></pre>
+            
+            <p>Como queremos acceder al componente botón de los hijos vamos a usar child.GetComponent>T<(), donde
+                T es el componente al que queremos acceder, en nuestro caso "Button"</p>
+            
+            <p><i>*Nota: Se está usando GetComponent>T< cuando realmente es con los signos mayor que y menor que al revés 
+                por problemas de lectura del libro.</i> <a href="//docs.unity3d.com/6000.6/Documentation/ScriptReference/GameObject.GetComponent.html"> API de Unity</a>
+            </p>
+            
+            <p>En el siguiente codigo hemos creado una variable "Image" para añadir la imagen
+                que le queramos poner a los botones. Luego, dentro del bucle, accedemos al componente
+                boton y le cambiamos el atributo image del boton asignandole la nuestra. Tómate tu tiempo
+                para entender el código.
+            </p>
+            
+        <pre><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.UI; //<------Añade esto para tener acceso a la clase Button
+
+public class Example : MonoBehaviour
+{
+    [SerializeField] private Image image; //Imagen que le ponemos al script por el inspector
+    void Start()
+    {
+        foreach (Transform child in transform)
+        {
+            Button boton = child.GetComponent>Button<();
+            boton.image = image;
+        }
+    }
+}
+            </code></pre>
+
+            <p>Si has probado el código anterior te habrás dado cuenta de que hay un problema. El hijo puede no tener un componente botón, 
+                con lo cual en nuestra variable "boton" se asignaría como "null". Al itentar acceder a la variable saltára un 
+                NullReferenceExeption.
+            </p>
+
+            <p>Para evitar esto añade lo siguiente antes de intentar cambiar la imagen:</p>
+
+<pre><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.UI;
+
+public class Example : MonoBehaviour
+{
+    [SerializeField] private Image image; //Imagen que le ponemos al script por el inspector
+    void Start()
+    {
+        foreach (Transform child in transform)
+        {
+            Button boton = child.GetComponent>Button<();
+            if(boton != null) boton.image = image; //Solo intentamos cambiar la imagen si boton no es null (o sea que el hijo es un Button)
+        }
+    }
+}
+</code></pre>
+
+        <h3>Visitar los descendientes</h3>
+
+        <p>Tenemos aún un problema que resolver y es que si el canvas tiene varias pantallas diferentes con varios botones,
+            habrá que visitar todos los hijos de los diferentes objetos. Una solución podría ser añadir el script que hicimos antes
+            a cada componente que vaya a tener botones que queramos cambiar la imagen. Aunque es una solución válida, no es algo cómodo de hacer porque tenemos que añadir el script tantas veces como pantallas
+            con botones haya. 
+        </p>
+
+        <p>Piensa en el coste temporal de la solución anterior antes de continuar.</p>
+            
+        <p>Una posible solución es recorrer de manera recursiva los descendientes del canvas. Simplemente tenemos que llamar al bucle
+            que hicimos antes, por cada hijo que tenga el GameObject en cuestión. Inténtalo por tu cuenta primero y compara tu solución
+            con los siguientes pasos.
+        </p>
+
+        <p>Para ello:</p>
+        <ol>
+            <li>Pasa el código de antes a una función con un único parámetro, el transform del objeto hijo.</li>
+            <li>Haz la llamada recursiva dentro del bucle.</li>
+        </ol>
+
+        <p>El código se queda así:</p>
+
+<pre><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.UI;
+
+public class Example : MonoBehaviour
+{
+    [SerializeField] private Image image; //Imagen que le ponemos al script por el inspector
+    void Start()
+    {
+        CambiarImagenBotones();
+    }
+
+    void CambiarImagenBotones(Transform parent)
+    {
+        foreach (Transform child in parent)
+        {
+            Button boton = child.GetComponent>Button<();
+            if(boton != null) boton.image = image; //Solo intentamos cambiar la imagen si boton no es null (o sea que el hijo es un Button)
+            CambiarImagenBotones(child);
+        }
+    }
+}
+</code></pre>
+
+        <p>Haz el siguiente análisis de la solución:</p>
+        <ul>
+            <li>¿Por qué no hay return en la función?</li>
+            <li>¿Cuál es la talla del problema?</li>
+            <li>Coste espacial y temporal en mejor (si hay) y peor caso</li>
+        </ul>
+
+        </section>
+    </main>
+
+    <script src="../main.js"></script>
+    <script>
+        cargarMenu("../"); // Le indicamos al menú que también debe subir un nivel
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

@@ -29,6 +29,7 @@ function cargarMenu(rutaBase) {
             <li><a href="${rutaBase}ejercicios/ejercicio-1.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 1: Actualizar proyecto y entregas</a></li>
             <li><a href="${rutaBase}ejercicios/ejercicio-2.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 2: Ejercicios de probabilidad básica</a></li>
             <li><a href="${rutaBase}ejercicios/ejercicio-3.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 3: Esperanza matemática</a></li>
+            <li><a href="${rutaBase}ejercicios/ejercicio-4.html"><i class="fa-solid fa-dumbbell"></i> Ejercicio 4: Cambiar componentes de descendientes</a></li>
         </ul>
     `;
 
