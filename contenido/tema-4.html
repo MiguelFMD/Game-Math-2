@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tema 4: Grafos</title>
+    <title>Tema 4: Árboles y ABB - Matemáticas para videojuegos II</title>
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
@@ -39,100 +39,506 @@
     <aside></aside>
 
     <main>
-        <section id="tema-4">
+        <section id="tema-3">
             <h2 class="section-title">
-                <i class="fa-solid fa-bookmark"></i> Tema 4: Grafos
+                <i class="fa-solid fa-bookmark"></i> Tema 4: Estructuras No Lineales (Árboles y ABB)
             </h2>
-            <h3>1. Introducción</h3>
-            <p>La conceptualización de un videojuego moderno requiere un entendimiento profundo de los sistemas que definen sus mecánicas, narrativas, arquitecturas espaciales y sistemas de inteligencia artificial. Tradicionalmente, la enseñanza de la teoría de grafos se ha abordado desde una perspectiva estrictamente matemática o algorítmica.</p>
             
-            <p>Sin embargo, la teoría de grafos puede entenderse de forma muy visual y aplicada, traduciendo conceptos abstractos de la matemática discreta en herramientas prácticas para el diseño de experiencias interactivas.</p>
-
-
-            <h3>2. Terminología y Base Teórica</h3>
+            <h3>1. Introducción y Definiciones</h3>
+            <p>Las estructuras de datos lineales (como pilas, colas y listas) tienen una limitación: a cada elemento le sigue solo uno. 
+                Para representar jerarquías o relaciones más complejas, utilizamos estructuras no lineales o multienlazadas, donde un elemento puede tener múltiples sucesores. 
+                Los principales ejemplos en programación son los árboles y los grafos.</p>
             
-             <h4>Definicion </h4>
-                <p>Un grafo es un conjunto de objetos representados por puntos (<strong>vértices o nodos</strong>) conectados por líneas (<strong>aristas o conexiones</strong>). 
-                 </p>
-
-            <p>Al igual que los árboles, los grafos poseen un vocabulario matemático propio que nos permite clasificar y entender su estructura. Formalmente, un grafo $G$ se define como un par ordenado $G = (V, E)$, donde $V$ es un conjunto de <strong>vértices</strong> y $E$ un conjunto de <strong>aristas</strong>.</p>
-            
-            <p>GRAFO BÁSICO PARA EXPLICAR CONCEPTOS</p>
-            <h4>Conceptos Fundamentales</h4>
-            <ul>
-                <li><strong>Vértice (Nodo):</strong> La unidad fundamental del grafo. En un videojuego puede representar un estado, una sala de una mazmorra, un punto en el mapa o un diálogo.</li>
-                <li><strong>Arista (Arco o Conexión):</strong> La línea que une dos vértices. Representa una relación, un pasillo o una transición válida entre ellos.</li>
-                <li><strong>Camino (Path):</strong> Una secuencia de vértices conectados por aristas que permite ir desde un nodo de origen hasta un destino.</li>
-                <li><strong>Ciclo:</strong> Un camino que empieza y termina exactamente en el mismo vértice, formando un bucle cerrado. (Nota: los árboles son, por definición, grafos <em>sin ciclos</em>).</li>
-                <li><strong>Grado de un nodo:</strong> El número de aristas conectadas a un vértice. En los grafos dirigidos, se divide en <strong>grado de entrada</strong> (flechas que apuntan hacia él) y <strong>grado de salida</strong> (flechas que salen de él).</li>
-                <li><strong>Nivel / Profundidad: </strong> Número de vértices/nodos que hay en un camino específico </li>    
-            </ul>
-
-            <h4>Tipos de Grafos</h4>
-            <ul>
-                <li><strong>Grafo No Dirigido:</strong> Las aristas son bidireccionales. Si el nodo A conecta con B, el jugador puede moverse libremente de A a B y de B a A (ej. un pasillo normal sin trampas).</li>
-                <li><strong>Grafo Dirigido (Dígrafo):</strong> Las aristas tienen dirección. Se puede ir de A a B, pero no necesariamente volver (ej. dejarse caer por un bordillo o una puerta de un solo sentido).</li>
-                <li><strong>Grafo Ponderado:</strong> Cada arista tiene un "peso" matemático o valor asociado. En la IA de navegación, este peso suele representar la distancia, el tiempo o el coste de estamina necesario para cruzar ese camino.</li>
-            </ul>
-
-            <h4> Recorrido de grafos, algoritmos de exploración</h4>
-            
-            <ul>
-                <li><strong>Búsqueda en Profundidad (DFS):</strong> Sigue un único camino de nodos consecutivos explorando el camino más largo posible antes de verse obligado a retroceder. </li>
-                <li><strong>Búsqueda en Anchura (BFS):</strong> Explora el grafo nivel por nivel, analizando en primera instancia todas los nodos inmediatos antes de examinar nodos secundarios.</li>
-            </ul>
-
-            <h3>3. Casos de uso </h3>
-            
-            <p> En este capítulo veremos diferentes casos de uso de la teoría de grafos aplicado a videojuegos </p>    
-            
-            <h4> 3.1. Ficción interactiva: Space Diva </h4>
-            
-            <p>EJEMPLOS DE GRAFOS DE SPACE DIVA Y TABLA DE DATOS</p>
-
-            <div class="callout challenge">
-                <div class="callout-title"><i class="fa-solid fa-dumbbell"></i> Propuesta de ejercicio: </div>
-                <p> Prueba <a href="https://twinery.org/" > Twine </a> una herramienta open-source para narrar historias interactivas no lineales.
-                    En la plataforma <a href="https://itch.io/games/tag-twine"> itch.io </a> puedes encontrar historias interactivas hechas con Twine.
-                </p>
+            <div class="callout definition">
+                <div class="callout-title"><i class="fa-solid fa-book"></i> Definición de Árbol</div>
+                <p>Un árbol es un conjunto finito de nodos. Se define de forma recursiva:</p>
+                <ol>
+                    <li>Existe un nodo principal llamado <strong>RAÍZ</strong>.</li>
+                    <li>Los demás nodos se agrupan en conjuntos disjuntos que son, a su vez, subárboles del raíz.</li>
+                </ol>
+                <p><em>Nota: Un árbol sin nodos se denomina "árbol nulo" y no tiene raíz.</em></p>
             </div>
 
-            <h4> 3.2. Estructuras No Transitivas: Piedra, papel y tijera </h4>
+             <p> <i>Nota: Puedes ir a la sección de </i><a href="#abb">Visualización Interactiva: Construcción de un ABB</a> 
+             para ver un ejemplo interactivo de un ABB.</p>
 
-            <p> Una relación binaria $R$ sobre un elemento $A$ es transitiva cuando se cumple: siempre que un elemento se relaciona con otro y este último con un tercero, entonces el primero se relaciona con el tercero.</p>
-            
-            <p> En el desarrollo de videojuegos, se suelen usar las siguientes formas de representar las relaciones binarias:</p>
+            <h3>2. Terminología Esencial</h3>
+            <p>El vocabulario utilizado para los árboles se basa en las relaciones familiares genealógicas:</p>
             <ul>
-                <li> Como <strong> Grafo </strong>: cada vez que un nodo $v1$ se pueda llegar a otro $v3$, pasando primero por un nodo intermedio $v2$, entonces 
-                también existirá la arista $(v1, v3)$</li>
-                <li> Como <strong> Matriz de adyacencia $M$</strong>: la matriz es tal que $M$  V  $M^2 = M$ </li>
+                <li><strong>Raíz:</strong> El único nodo del árbol que no tiene padre.</li>
+                <li><strong>Padre/Hijo:</strong> Todo nodo (salvo la raíz) tiene un padre y 0 o más hijos.</li>
+                <li><strong>Hoja (Nodo Terminal):</strong> Nodo que no tiene descendientes (sin hijos).</li>
+                <li><strong>Nodo Interior:</strong> Nodo que no es ni raíz ni hoja (tiene ramificaciones).</li>
+                <li><strong>Hermanos:</strong> Nodos que comparten el mismo padre.</li>
+                <li><strong>Bosque:</strong> Una colección de dos o más árboles disjuntos.</li>
             </ul>
-            <p>PONER AQUÍ EJEMPLO piedra-papel-tijera</p>
 
-            <p> Al seguir las reglas de las estructuras No transitivas encontramos <i> juegos balanceado </i> como es el caso 
-            del piedra-papel-tijera. En este caso la dirección de las aristas del grafo son muy importantes: las que entran son debilidades, y las que salen fortalezas.
-            </p>
+            <h4>Propiedades de Medida </h4>
+            <ul>
+                <li><strong>Nivel:</strong> La distancia desde la raíz hasta un nodo específico.</li>
+                <li><strong>Altura (Profundidad):</strong> El número máximo de nodos en la rama más larga.</li>
+                <li><strong>Peso:</strong> El número total de nodos terminales (hojas) que tiene el árbol.</li>
+            </ul>
 
-            <div class="callout challenge">
-                <div class="callout-title"><i class="fa-solid fa-dumbbell"></i> Propuesta de ejercicio: </div>
-                <p> ¿Se te ocurre algún videojuego donde exista esta estructura? ¿Se siguen cumpliendo las reglas de las estructuras no transitivas? ¿Qué ocurre cuando no se cumplen?
-                </p>
+            <h3>3. Árboles Binarios</h3>
+            <p>Un árbol binario es un tipo especial de árbol donde cada nodo puede tener <strong>como máximo dos subárboles</strong>: Izquierdo y Derecho.</p>
+            
+            <p>Propiedades clave de los árboles binarios:</p>
+            <ul>
+                <li><strong>Similares:</strong> Tienen la misma estructura topológica.</li>
+                <li><strong>Equivalentes:</strong> Son similares y además contienen la misma información.</li>
+                <li><strong>Equilibrado:</strong> Un árbol donde, para cualquier nodo, la diferencia de altura entre su subárbol izquierdo y derecho es como máximo 1.</li>
+            </ul>
+
+            <p>Fórmula de equilibrio matemático: $|\text{Altura(Izq)} - \text{Altura(Der)}| \le 1$ </p>
+
+            <h3>4. Recorridos del Árbol</h3>
+            <p>Recorrer un árbol implica visitar cada nodo exactamente una vez. Existen tres formas principales de recorrido en profundidad:</p>
+            <ol>
+                <li><strong>PRE-ORDEN:</strong> Raíz $\rightarrow$ Izquierda $\rightarrow$ Derecha.</li>
+                <li><strong>IN-ORDEN:</strong> Izquierda $\rightarrow$ Raíz $\rightarrow$ Derecha. <em>(Importante: En un ABB, este recorrido devuelve los datos ordenados).</em></li>
+                <li><strong>POST-ORDEN:</strong> Izquierda $\rightarrow$ Derecha $\rightarrow$ Raíz.</li>
+            </ol>
+
+            <h3>5. Árbol Binario de Búsqueda (ABB)</h3>
+            <p>El ABB es una estructura diseñada para optimizar las búsquedas, resolviendo la ineficiencia de inserción/borrado que sufren los arrays ordenados tradicionales.</p>
+
+            <h4>Reglas de Construcción</h4>
+            <ul>
+                <li><strong>Clave Única:</strong> Generalmente cada nodo tiene un identificador único.</li>
+                <li><strong>Menores a la Izquierda:</strong> Todos los valores del subárbol izquierdo son menores que la raíz.</li>
+                <li><strong>Mayores a la Derecha:</strong> Todos los valores del subárbol derecho son mayores que la raíz.</li>
+            </ul>
+
+            <h4>Operaciones Básicas</h4>
+            <ul>
+                <li><strong>Búsqueda:</strong> Dicotómica. Se compara el valor con la raíz y se desciende por la izquierda o derecha.</li>
+                <li><strong>Inserción:</strong> Se busca la posición vacía (NULL) correcta respetando el orden y se enlaza el nuevo nodo.</li>
+                <li><strong>Eliminación:</strong> Es el proceso más complejo. Tiene tres casos:
+                    <ul>
+                        <li><em>Hoja:</em> Se elimina directamente.</li>
+                        <li><em>1 Hijo:</em> El hijo sube a ocupar el puesto del padre.</li>
+                        <li><em>2 Hijos:</em> Se sustituye por el nodo 'inmediato inferior' (el mayor del subárbol izquierdo) o el 'inmediato superior' para mantener la coherencia matemática.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3 id="abb">Visualización Interactiva: Construcción de un ABB</h3>  
+            <p>Comprender cómo se organiza un Árbol Binario de Búsqueda es mucho más fácil viéndolo en acción. Utiliza este simulador para <strong>Insertar</strong> nuevos nodos, <strong>Buscar</strong> elementos o <strong>Eliminar</strong> datos existentes. Observa cómo el algoritmo toma decisiones y, en especial, cómo resuelve los 3 casos de la <strong>eliminación</strong>.</p>
+
+            <div class="canvas-container" style="height: auto; padding-bottom: 2rem; display: flex; flex-direction: column; align-items: center;">
+                
+                <!-- Panel de controles -->
+                <div style="width: 100%; max-width: 800px; display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; padding: 1rem; background-color: var(--sidebar-bg); border: 1px solid var(--sidebar-border); border-radius: 6px; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <input type="number" id="abb-input" placeholder="Ej: 50" style="padding: 0.5rem; border: 1px solid var(--sidebar-border); border-radius: 4px; width: 80px;">
+                        <button id="btn-insert" style="padding: 0.5rem 1rem; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Insertar</button>
+                        <button id="btn-search" style="padding: 0.5rem 1rem; background-color: var(--accent-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Buscar</button>
+                        <button id="btn-delete" style="padding: 0.5rem 1rem; background-color: #e53e3e; color: white; border: none; border-radius: 4px; cursor: pointer;">Eliminar</button>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <label for="abb-speed" style="font-size: 0.9rem; font-weight: bold;">Velocidad:</label>
+                        <input type="range" id="abb-speed" min="1" max="10" value="5">
+                    </div>
+                </div>
+
+                <!-- Barra de estado / Consola -->
+                <div id="abb-msg" style="width: 100%; max-width: 800px; padding: 1rem; margin-bottom: 1rem; background-color: var(--code-bg); border-left: 4px solid var(--accent-color); font-family: monospace; font-size: 0.95rem; font-weight: bold; border-radius: 0 6px 6px 0;">
+                    Esperando acción...
+                </div>
+
+                <!-- Lienzo del árbol -->
+                <canvas id="canvas-abb" width="800" height="400" style="max-width: 100%; background-color: var(--bg-color); border: 1px solid var(--sidebar-border); border-radius: 6px;"></canvas>
             </div>
 
-            <h4> 3.3. Generación procedural: Candle Tale </h4>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const canvas = document.getElementById('canvas-abb');
+                    const ctx = canvas.getContext('2d');
+                    const input = document.getElementById('abb-input');
+                    const msg = document.getElementById('abb-msg');
+                    const speedSlider = document.getElementById('abb-speed');
+                    
+                    const btnInsert = document.getElementById('btn-insert');
+                    const btnSearch = document.getElementById('btn-search');
+                    const btnDelete = document.getElementById('btn-delete');
+
+                    let root = null;
+                    let isAnimating = false;
+
+                    // Colores del tema
+                    const colorNode = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-bg').trim();
+                    const colorText = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+                    const colorLine = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-border').trim();
+                    const colorHighlight = '#fbd38d'; // Naranja suave (Evaluando)
+                    const colorSuccess = '#68d391';   // Verde (Encontrado/Insertado)
+                    const colorDanger = '#fc8181';    // Rojo (Eliminado/Error)
+
+                    class Node {
+                        constructor(value) {
+                            this.value = value;
+                            this.left = null;
+                            this.right = null;
+                            this.x = 0;
+                            this.y = 0;
+                        }
+                    }
+
+                    // --- FUNCIONES DE DIBUJO ---
+                    function updatePositions(node, x, y, offset) {
+                        if (!node) return;
+                        node.x = x;
+                        node.y = y;
+                        updatePositions(node.left, x - offset, y + 60, offset / 2);
+                        updatePositions(node.right, x + offset, y + 60, offset / 2);
+                    }
+
+                    function drawTree(highlightNode = null, color = colorHighlight, secondaryHighlight = null, secondaryColor = colorSuccess) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        if (root) {
+                            updatePositions(root, canvas.width / 2, 40, canvas.width / 4);
+                            drawNode(root, highlightNode, color, secondaryHighlight, secondaryColor);
+                        }
+                    }
+
+                    function drawNode(node, highlightNode, color, secondaryHighlight, secondaryColor) {
+                        if (!node) return;
+
+                        ctx.strokeStyle = colorLine;
+                        ctx.lineWidth = 2;
+                        if (node.left) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(node.left.x, node.left.y);
+                            ctx.stroke();
+                            drawNode(node.left, highlightNode, color, secondaryHighlight, secondaryColor);
+                        }
+                        if (node.right) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(node.right.x, node.right.y);
+                            ctx.stroke();
+                            drawNode(node.right, highlightNode, color, secondaryHighlight, secondaryColor);
+                        }
+
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, 18, 0, Math.PI * 2);
+                        
+                        // Selección de colores para la animación
+                        if (node === highlightNode) {
+                            ctx.fillStyle = color;
+                        } else if (node === secondaryHighlight) {
+                            ctx.fillStyle = secondaryColor;
+                        } else {
+                            ctx.fillStyle = colorNode;
+                        }
+                        
+                        ctx.fill();
+                        ctx.strokeStyle = colorLine;
+                        ctx.stroke();
+
+                        ctx.fillStyle = (node === highlightNode || node === secondaryHighlight) ? '#000' : colorText;
+                        ctx.font = 'bold 14px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(node.value, node.x, node.y);
+                    }
+
+                    const getDelay = () => (11 - speedSlider.value) * 150;
+                    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+                    function setControls(state) {
+                        isAnimating = !state;
+                        btnInsert.disabled = !state;
+                        btnSearch.disabled = !state;
+                        btnDelete.disabled = !state;
+                        input.disabled = !state;
+                    }
+
+                    // --- INSERTAR ---
+                    async function insertNode(val) {
+                        if (!root) {
+                            root = new Node(val);
+                            msg.innerText = `Árbol vacío. Insertando ${val} como nodo raíz.`;
+                            drawTree(root, colorSuccess);
+                            await sleep(getDelay() * 2);
+                            return;
+                        }
+
+                        let curr = root;
+                        while (true) {
+                            drawTree(curr, colorHighlight);
+                            if (val < curr.value) {
+                                msg.innerText = `¿${val} es menor que ${curr.value}? Sí, bajamos por la izquierda.`;
+                                await sleep(getDelay());
+                                if (!curr.left) {
+                                    curr.left = new Node(val);
+                                    drawTree(curr.left, colorSuccess);
+                                    msg.innerText = `Posición vacía. Insertando ${val} a la izquierda de ${curr.value}.`;
+                                    await sleep(getDelay() * 2);
+                                    break;
+                                }
+                                curr = curr.left;
+                            } else if (val > curr.value) {
+                                msg.innerText = `¿${val} es mayor que ${curr.value}? Sí, bajamos por la derecha.`;
+                                await sleep(getDelay());
+                                if (!curr.right) {
+                                    curr.right = new Node(val);
+                                    drawTree(curr.right, colorSuccess);
+                                    msg.innerText = `Posición vacía. Insertando ${val} a la derecha de ${curr.value}.`;
+                                    await sleep(getDelay() * 2);
+                                    break;
+                                }
+                                curr = curr.right;
+                            } else {
+                                msg.innerText = `El valor ${val} ya existe en el árbol.`;
+                                drawTree(curr, colorDanger);
+                                await sleep(getDelay() * 2);
+                                break;
+                            }
+                        }
+                    }
+
+                    // --- BUSCAR ---
+                    async function searchNode(val) {
+                        if (!root) {
+                            msg.innerText = "El árbol está vacío.";
+                            return;
+                        }
+                        let curr = root;
+                        while (curr) {
+                            drawTree(curr, colorHighlight);
+                            if (val === curr.value) {
+                                msg.innerText = `¡Valor ${val} encontrado!`;
+                                drawTree(curr, colorSuccess);
+                                await sleep(getDelay() * 2);
+                                return;
+                            }
+                            if (val < curr.value) {
+                                msg.innerText = `${val} es menor que ${curr.value}. Izquierda.`;
+                                curr = curr.left;
+                            } else {
+                                msg.innerText = `${val} es mayor que ${curr.value}. Derecha.`;
+                                curr = curr.right;
+                            }
+                            await sleep(getDelay());
+                        }
+                        msg.innerText = `El valor ${val} no existe en el árbol.`;
+                        drawTree();
+                    }
+
+                    // --- ELIMINAR ANIMADO (V2) ---
+                    async function deleteNode(val) {
+                        if (!root) {
+                            msg.innerText = "El árbol está vacío.";
+                            return;
+                        }
+
+                        // 1. Fase de búsqueda
+                        let parent = null;
+                        let curr = root;
+                        let isLeftChild = false;
+
+                        while (curr) {
+                            drawTree(curr, colorHighlight);
+                            msg.innerText = `Buscando nodo ${val} para eliminarlo...`;
+                            await sleep(getDelay());
+
+                            if (val === curr.value) break;
+
+                            parent = curr;
+                            if (val < curr.value) {
+                                isLeftChild = true;
+                                curr = curr.left;
+                            } else {
+                                isLeftChild = false;
+                                curr = curr.right;
+                            }
+                        }
+
+                        if (!curr) {
+                            msg.innerText = `El valor ${val} no está en el árbol.`;
+                            drawTree();
+                            return;
+                        }
+
+                        drawTree(curr, colorDanger);
+                        msg.innerText = `¡Nodo ${val} encontrado! Analizando sus hijos para aplicar el caso correcto...`;
+                        await sleep(getDelay() * 2);
+
+                        // CASO 1: Es una hoja (0 hijos)
+                        if (!curr.left && !curr.right) {
+                            msg.innerText = `CASO 1: El nodo es una hoja (0 hijos). Se elimina directamente.`;
+                            await sleep(getDelay() * 2);
+                            
+                            if (!parent) root = null;
+                            else if (isLeftChild) parent.left = null;
+                            else parent.right = null;
+                        }
+                        // CASO 2: Tiene 1 hijo
+                        else if (!curr.left || !curr.right) {
+                            let child = curr.left ? curr.left : curr.right;
+                            drawTree(curr, colorDanger, child, colorSuccess);
+                            msg.innerText = `CASO 2: Tiene 1 hijo (${child.value}). El hijo sube a ocupar su lugar.`;
+                            await sleep(getDelay() * 3);
+
+                            if (!parent) root = child;
+                            else if (isLeftChild) parent.left = child;
+                            else parent.right = child;
+                        }
+                        // CASO 3: Tiene 2 hijos
+                        else {
+                            msg.innerText = `CASO 3: Tiene 2 hijos. Buscando el sucesor inmediato (menor de los mayores)...`;
+                            await sleep(getDelay() * 2);
+
+                            let successorParent = curr;
+                            let successor = curr.right;
+                            
+                            drawTree(curr, colorDanger, successor, colorHighlight);
+                            msg.innerText = `Paso 1: Vamos un paso a la derecha al nodo ${successor.value}...`;
+                            await sleep(getDelay() * 1.5);
+
+                            while (successor.left) {
+                                successorParent = successor;
+                                successor = successor.left;
+                                drawTree(curr, colorDanger, successor, colorHighlight);
+                                msg.innerText = `Paso 2: Bajamos todo lo posible a la izquierda... analizando ${successor.value}`;
+                                await sleep(getDelay() * 1.5);
+                            }
+
+                            drawTree(curr, colorDanger, successor, colorSuccess);
+                            msg.innerText = `¡El sucesor es ${successor.value}! Intercambiamos los valores.`;
+                            await sleep(getDelay() * 2);
+
+                            // Intercambio visual
+                            curr.value = successor.value;
+                            drawTree(successor, colorDanger, curr, colorSuccess); 
+                            msg.innerText = `Valor copiado a la raíz. Ahora eliminamos el nodo redundante (que queda como hoja o con 1 hijo).`;
+                            await sleep(getDelay() * 2);
+
+                            // Eliminación del sucesor original
+                            if (successorParent.left === successor) {
+                                successorParent.left = successor.right;
+                            } else {
+                                successorParent.right = successor.right;
+                            }
+                        }
+
+                        drawTree();
+                        msg.innerText = `Nodo eliminado y árbol reestructurado correctamente.`;
+                    }
+
+                    // --- EVENTOS DE BOTONES ---
+                    btnInsert.addEventListener('click', async () => {
+                        const val = parseInt(input.value);
+                        if (isNaN(val)) return;
+                        setControls(false);
+                        await insertNode(val);
+                        input.value = '';
+                        drawTree();
+                        msg.innerText = "Esperando nueva acción...";
+                        setControls(true);
+                    });
+
+                    btnSearch.addEventListener('click', async () => {
+                        const val = parseInt(input.value);
+                        if (isNaN(val)) return;
+                        setControls(false);
+                        await searchNode(val);
+                        drawTree();
+                        msg.innerText = "Esperando nueva acción...";
+                        setControls(true);
+                    });
+
+                    btnDelete.addEventListener('click', async () => {
+                        const val = parseInt(input.value);
+                        if (isNaN(val)) return;
+                        setControls(false);
+                        await deleteNode(val);
+                        input.value = '';
+                        setControls(true);
+                    });
+
+                    // Inicializamos el árbol con algunos valores predefinidos para que no empiece vacío
+                    /*async function initTree() {
+                        const initValues = [50, 30, 70, 20, 40, 60, 80];
+                        for(let val of initValues) {
+                            if(!root) root = new Node(val);
+                            else {
+                                let curr = root;
+                                while (true) {
+                                    if (val < curr.value) {
+                                        if (!curr.left) { curr.left = new Node(val); break; }
+                                        curr = curr.left;
+                                    } else {
+                                        if (!curr.right) { curr.right = new Node(val); break; }
+                                        curr = curr.right;
+                                    }
+                                }
+                            }
+                        }
+                        drawTree();
+                        msg.innerText = "Árbol inicial cargado. Prueba a eliminar el 50 para ver el Caso 3.";
+                    }
+                    
+                    initTree();*/
+                });
+            </script>
+
+            <h3>6. Análisis de Eficiencia</h3>
+
+            <h4>Comparativa de Complejidad (Big O)</h4>
+            <p>La eficiencia depende fuertemente de si el árbol está equilibrado. En el peor caso (árbol degenerado), todos los nodos caen hacia un solo lado 
+                y el árbol se comporta exactamente como una lista enlazada (perdiendo toda su ventaja).</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Estructura</th>
+                        <th>Búsqueda </th>
+                        <th>Inserción</th>
+                        <th>Peor Caso (Desequilibrado)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Array Ordenado</strong></td>
+                        <td>$O(n)$ </td>
+                        <td>$O(n)$ </td>
+                        <td>$---$ </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Árbol ABB</strong> </td>
+                        <td><strong>$O(\log n)$</strong> </td>
+                        <td><strong>$O(\log n)$</strong> </td>
+                        <td>$O(n)$ </td>
+                    </tr>
+                </tbody>
+            </table>
 
            
-            <div class="callout definition">
-                <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> Investiga: </div>
-                <p> Puedes encontrar miles de recursos acerca de diferentes técnicas de generación procedural con grafos. Lo más importante es entender las bases de esta estrctura de datos
-                    para aprovecharla a tu favor. Busca información de algún videojuego que sepas (o creas) que usa la generación procedural y comprueba que usa la teoría de grafos para su generación.
-                </p>
-            </div>
 
-            <h4> 3.4. Navegación e Inteligencia Artificial: Candle Tale</h4>
+            <h4>El Árbol de Escena (Jerarquía) en el Motor de Juego</h4>
+            <p>El núcleo de motores como Unity organiza los elementos visuales y colisiones mediante una estructura de datos jerárquica de tipo árbol:</p>
+
+            <p> AÑADIR ARBOL DE JERARQUIA DE EJEMPLOS</p>
             
+            <p>Cada nodo almacena una <strong>matriz de transformación afín local</strong> (traslación, rotación, escala). 
+                Al recorrer el grafo de manera descendente, el motor multiplica las matrices para calcular la posición absoluta final. 
+                Si el nodo "Tanque" avanza, todos sus nodos hijos heredarán el movimiento y se desplazarán solidariamente en el espacio.</p>
+                 
+           
+            <div class="callout challenge">
+                <div class="callout-title"><i class="fa-solid fa-dumbbell"></i> Investiga: </div>
+                 <p>Estructuras derivadas de esta jerarquía, como los <strong>BSP Trees</strong> (Particionado de Espacio Binario), 
+                <strong>Octrees</strong> o los <strong>BVH Trees
+                </strong> (Jerarquía de Volúmenes Envolventes), permiten al motor descartar rápidamente colisiones o renderizados de objetos ocultos, optimizando el rendimiento.</p>
+                <a href="https://www.youtube.com/watch?v=wLHXn8IlAiA"> BSP Trees: The Magic Behind Collision Detection in Quake </a>
+            </div>
+            
+               
+
         </section>
-       
     </main>
 
     <script src="../main.js"></script>

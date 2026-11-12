@@ -80,8 +80,7 @@ public class Example : MonoBehaviour
             <p>Como queremos acceder al componente botón de los hijos vamos a usar child.GetComponent>T<(), donde
                 T es el componente al que queremos acceder, en nuestro caso "Button"</p>
             
-            <p><i>*Nota: Se está usando GetComponent>T< cuando realmente es con los signos mayor que y menor que al revés 
-                por problemas de lectura del libro.</i> <a href="//docs.unity3d.com/6000.6/Documentation/ScriptReference/GameObject.GetComponent.html"> API de Unity</a>
+            <p> <a href="//docs.unity3d.com/6000.6/Documentation/ScriptReference/GameObject.GetComponent.html"> API de Unity</a>
             </p>
             
             <p>En el siguiente codigo hemos creado una variable "Image" para añadir la imagen
@@ -101,7 +100,7 @@ public class Example : MonoBehaviour
     {
         foreach (Transform child in transform)
         {
-            Button boton = child.GetComponent>Button<();
+            Button boton = child.GetComponent&lt;Button&gt;();
             boton.image = image;
         }
     }
@@ -126,7 +125,7 @@ public class Example : MonoBehaviour
     {
         foreach (Transform child in transform)
         {
-            Button boton = child.GetComponent>Button<();
+            Button boton = child.GetComponent&lt;Button&gt;();
             if(boton != null) boton.image = image; //Solo intentamos cambiar la imagen si boton no es null (o sea que el hijo es un Button)
         }
     }
@@ -172,7 +171,7 @@ public class Example : MonoBehaviour
     {
         foreach (Transform child in parent)
         {
-            Button boton = child.GetComponent>Button<();
+            Button boton = child.GetComponent&lt;Button&gt;();
             if(boton != null) boton.image = image; //Solo intentamos cambiar la imagen si boton no es null (o sea que el hijo es un Button)
             CambiarImagenBotones(child);
         }

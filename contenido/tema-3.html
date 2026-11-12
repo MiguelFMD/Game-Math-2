@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tema 3: Árboles y ABB - Matemáticas para videojuegos II</title>
+    <title>Tema 3: Estructuras Lineales y TAD - Matemáticas para videojuegos II</title>
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
@@ -19,6 +19,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <!-- Highlight.js (Resaltado de sintaxis) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Soporte adicional para C# -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
             onload="renderMathInElement(document.body, {
@@ -33,6 +38,159 @@
     </script>
     
     <link rel="stylesheet" href="../style.css">
+    <style>
+        /* Estilos auxiliares para diagramas del Tema 3 adaptables a modo claro/oscuro */
+        .diagram-box {
+            background-color: var(--code-bg, #1e1e2e);
+            color: var(--text-color, #e2e8f0);
+            border: 1px solid rgba(128, 128, 128, 0.25);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .muralla-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: center;
+            text-align: center;
+        }
+        @media (max-width: 680px) {
+            .muralla-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .muralla-wall {
+            border: 3px dashed #e53e3e;
+            border-radius: 10px;
+            padding: 1.25rem;
+            background: rgba(229, 62, 62, 0.08);
+            position: relative;
+        }
+        .muralla-badge {
+            display: inline-block;
+            background: #e53e3e;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.78rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+        .memory-layout {
+            display: flex;
+            flex-direction: column;
+            max-width: 420px;
+            margin: 1rem auto;
+            border: 2px solid rgba(128, 128, 128, 0.4);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 0.92rem;
+        }
+        .mem-zone {
+            padding: 0.85rem 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .mem-static {
+            background: rgba(66, 153, 225, 0.2);
+            border-bottom: 2px solid rgba(128, 128, 128, 0.35);
+        }
+        .mem-heap {
+            background: rgba(237, 137, 54, 0.2);
+            border-bottom: 1px dashed rgba(128, 128, 128, 0.4);
+        }
+        .mem-free {
+            padding: 1.1rem;
+            font-style: italic;
+            opacity: 0.75;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 8px,
+                rgba(128, 128, 128, 0.08) 8px,
+                rgba(128, 128, 128, 0.08) 16px
+            );
+        }
+        .mem-stack {
+            background: rgba(72, 187, 120, 0.2);
+            border-top: 1px dashed rgba(128, 128, 128, 0.4);
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.94rem;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid rgba(112, 127, 188, 0.836);
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .comparison-table th {
+            background-color: rgb(122, 152, 199);
+            font-weight: bold;
+        }
+        /* Estilos del Laboratorio Interactivo */
+        .lab-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+        .lab-btn {
+            background-color: var(--accent-color, #3182ce);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 0.9rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.15s, transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .lab-btn:hover {
+            opacity: 0.9;
+        }
+        .lab-btn:active {
+            transform: scale(0.98);
+        }
+        .lab-btn.danger {
+            background-color: #e53e3e;
+        }
+        .lab-btn.secondary {
+            background-color: #718096;
+        }
+        .lab-btn.success {
+            background-color: #38a169;
+        }
+        .lab-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            width: 100%;
+            max-width: 720px;
+            margin-top: 1rem;
+            font-size: 0.88rem;
+        }
+        @media (max-width: 600px) {
+            .lab-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        .stat-card {
+            border: 1px solid rgba(128, 128, 128, 0.3);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            background: rgba(128, 128, 128, 0.06);
+        }
+    </style>
 </head>
 <body>
 
@@ -41,502 +199,963 @@
     <main>
         <section id="tema-3">
             <h2 class="section-title">
-                <i class="fa-solid fa-bookmark"></i> Tema 3: Estructuras No Lineales (Árboles y ABB)
+                <i class="fa-solid fa-bookmark"></i> Tema 3: TAD, Memoria y Estructuras Lineales
             </h2>
-            
-            <h3>1. Introducción y Definiciones</h3>
-            <p>Las estructuras de datos lineales (como pilas, colas y listas) tienen una limitación: a cada elemento le sigue solo uno. 
-                Para representar jerarquías o relaciones más complejas, utilizamos estructuras no lineales o multienlazadas, donde un elemento puede tener múltiples sucesores. 
-                Los principales ejemplos en programación son los árboles y los grafos.</p>
-            
-            <div class="callout definition">
-                <div class="callout-title"><i class="fa-solid fa-book"></i> Definición de Árbol</div>
-                <p>Un árbol es un conjunto finito de nodos. Se define de forma recursiva:</p>
-                <ol>
-                    <li>Existe un nodo principal llamado <strong>RAÍZ</strong>.</li>
-                    <li>Los demás nodos se agrupan en conjuntos disjuntos que son, a su vez, subárboles del raíz.</li>
-                </ol>
-                <p><em>Nota: Un árbol sin nodos se denomina "árbol nulo" y no tiene raíz.</em></p>
+
+            <h3>1. Tipos Abstractos de Datos (TAD) y Encapsulación</h3>
+            <p>Cuando empezamos a programar un videojuego en Unity, es muy tentador pensar inmediatamente en cómo vamos a guardar los datos físicamente: <em>«¿uso un array de enteros para el inventario?, ¿y si luego necesito guardar más objetos?»</em>. Sin embargo, obligarnos a decidir todos los detalles físicos de almacenamiento en una fase tan temprana complica innecesariamente el diseño. Si más adelante modificamos esa estructura para que el juego vaya más fluido, corremos el riesgo de que el resto de nuestros scripts dejen de funcionar.</p>
+
+            <p>Para evitar este problema, en ingeniería de software separamos <strong>qué hace</strong> un conjunto de datos de <strong>cómo se guarda en memoria</strong> mediante el uso de <strong>Tipos Abstractos de Datos (TAD)</strong>.</p>
+
+            <h4>1.1. TAD, Tipo de Datos y Estructura de Datos</h4>
+            <p>Aunque en el día a día a veces se usan como sinónimos, es fundamental distinguir tres conceptos clave:</p>
+            <ul>
+                <li><strong>Tipo Abstracto de Datos (TAD):</strong> Es el <strong>modelo matemático</strong> de una colección de objetos de datos junto con las <strong>operaciones</strong> que manipulan esos objetos. Por ejemplo, el TAD <em>CONJUNTO</em> define una colección de elementos con operaciones como la unión, la intersección o la diferencia, sin importar en qué lenguaje se programe.</li>
+                <li><strong>Tipo de Datos:</strong> Es la traducción de la especificación de un TAD a la sintaxis de un lenguaje concreto (como C#). Se compone de las variables necesarias para definir los datos y de los métodos o <strong>rutinas de acceso</strong> que implementan las operaciones del TAD.</li>
+                <li><strong>Estructura de Datos:</strong> Es la colección física de variables en la memoria que están relacionadas de una forma específica (por ejemplo, casillas contiguas en un array o nodos enlazados por referencias). Nuestro objetivo es usar la estructura de datos que implemente cada TAD de la forma más eficiente posible.</li>
+            </ul>
+
+            <p>C# ya nos ofrece <strong>tipos de datos predefinidos</strong>. Por ejemplo, el tipo <code>int</code> implementa el concepto matemático de número entero (el TAD <em>ENTERO</em>, formado por la unión de $\{-1, -2, \dots, -\infty\}$ y $\{0, 1, 2, \dots, \infty\}$ junto con operaciones como suma, resta, multiplicación y división entera). Observa que en matemáticas los enteros son infinitos, pero en la memoria de un ordenador eso es imposible: al implementar el tipo <code>int</code> en C# se decidió usar 32 bits en formato complemento a dos, acotando su rango entre $-2.147.483.648$ y $2.147.483.647$. Cuando un juego requiere estructuras que el lenguaje no trae de fábrica, construimos <strong>tipos de datos definidos por el usuario</strong>.</p>
+
+            <h4>1.2. Visión Lógica vs. Visión de Implementación</h4>
+            <p>Al crear nuestros propios tipos de datos en Unity trabajaremos siempre desde dos puntos de vista:</p>
+            <ul>
+                <li><strong>Visión lógica (Diseño):</strong> Es la que usamos al diseñar el juego. Define qué representa el TAD y qué operaciones ofrece al exterior (por ejemplo, una mochila donde podemos meter objetos, sacarlos y mirar cuántos hay). <strong>Solo debe existir una visión lógica</strong>.</li>
+                <li><strong>Visión de implementación (Memoria y Eficiencia):</strong> Considera cómo se representan los datos en la memoria RAM y cómo están programados los métodos de acceso por dentro. Para una misma visión lógica <strong>pueden existir varios enfoques de implementación distintos</strong> (por ejemplo, programar la mochila por dentro con un array fijo o con nodos dinámicos).</li>
+            </ul>
+
+            <h4>1.3. Encapsulación en C# (<code>private</code> vs. <code>public</code>)</h4>
+            <p>Hasta ahora no hemos puesto a penas diferencia entre cuando usar variables <code>private</code> o <code>public</code>. 
+                Un script de nuestro juego (como el controlador del personaje) debería manipular un tipo de datos únicamente en 
+                función de su visión lógica, nunca tocando directamente su almacenamiento físico. Aquí es donde ambas etiquetas
+                cobran un papel importante:</p>
+
+            <div class="diagram-box">
+                <div class="muralla-grid">
+                    <div>
+                        <i class="fa-solid fa-gamepad fa-2x" style="color: var(--accent-color);"></i>
+                        <h5 style="margin: 0.5rem 0;">Programa de Aplicación</h5>
+                        <p style="font-size: 0.85rem; margin: 0;">Scripts de Unity (<code>PlayerController</code>, <code>UIInventario</code>)</p>
+                    </div>
+                    <div>
+                        <div style="margin-bottom: 1rem;">
+                            <span style="color: #38a169; font-weight: bold; font-size: 0.85rem;"><i class="fa-solid fa-check"></i> Rutinas de acceso (<code>public</code>)</span><br>
+                            <span style="font-size: 1.3rem;">&#10231;</span>
+                        </div>
+                        <div>
+                            <span style="color: #e53e3e; font-weight: bold; font-size: 0.85rem;"><i class="fa-solid fa-ban"></i> Acceso directo prohibido</span><br>
+                            <span style="font-size: 1.3rem; color: #e53e3e;">&#10230; &#10060;</span>
+                        </div>
+                    </div>
+                    <div class="muralla-wall">
+                        <span class="muralla-badge">ENCAPSULACIÓN</span>
+                        <h5 style="margin: 0.4rem 0;">Implementación del TAD</h5>
+                        <p style="font-size: 0.85rem; margin: 0;">Estructura de datos oculta (variables <code>private</code>)</p>
+                    </div>
+                </div>
             </div>
 
-             <p> <i>Nota: Puedes ir a la sección de </i><a href="#abb">Visualización Interactiva: Construcción de un ABB</a> 
-             para ver un ejemplo interactivo de un ABB.</p>
-
-            <h3>2. Terminología Esencial</h3>
-            <p>El vocabulario utilizado para los árboles se basa en las relaciones familiares genealógicas:</p>
-            <ul>
-                <li><strong>Raíz:</strong> El único nodo del árbol que no tiene padre.</li>
-                <li><strong>Padre/Hijo:</strong> Todo nodo (salvo la raíz) tiene un padre y 0 o más hijos.</li>
-                <li><strong>Hoja (Nodo Terminal):</strong> Nodo que no tiene descendientes (sin hijos).</li>
-                <li><strong>Nodo Interior:</strong> Nodo que no es ni raíz ni hoja (tiene ramificaciones).</li>
-                <li><strong>Hermanos:</strong> Nodos que comparten el mismo padre.</li>
-                <li><strong>Bosque:</strong> Una colección de dos o más árboles disjuntos.</li>
-            </ul>
-
-            <h4>Propiedades de Medida </h4>
-            <ul>
-                <li><strong>Nivel:</strong> La distancia desde la raíz hasta un nodo específico.</li>
-                <li><strong>Altura (Profundidad):</strong> El número máximo de nodos en la rama más larga.</li>
-                <li><strong>Peso:</strong> El número total de nodos terminales (hojas) que tiene el árbol.</li>
-            </ul>
-
-            <h3>3. Árboles Binarios</h3>
-            <p>Un árbol binario es un tipo especial de árbol donde cada nodo puede tener <strong>como máximo dos subárboles</strong>: Izquierdo y Derecho.</p>
-            
-            <p>Propiedades clave de los árboles binarios:</p>
-            <ul>
-                <li><strong>Similares:</strong> Tienen la misma estructura topológica.</li>
-                <li><strong>Equivalentes:</strong> Son similares y además contienen la misma información.</li>
-                <li><strong>Equilibrado:</strong> Un árbol donde, para cualquier nodo, la diferencia de altura entre su subárbol izquierdo y derecho es como máximo 1.</li>
-            </ul>
-
-            <p>Fórmula de equilibrio matemático: $|\text{Altura(Izq)} - \text{Altura(Der)}| \le 1$ </p>
-
-            <h3>4. Recorridos del Árbol</h3>
-            <p>Recorrer un árbol implica visitar cada nodo exactamente una vez. Existen tres formas principales de recorrido en profundidad:</p>
+            <p>Esta separación se conoce en ingeniería de software como <strong>encapsulación de datos</strong> u <strong>ocultación de la información</strong>. 
+                En C#, encapsulamos declarando las estructuras internas como <code>private</code> y construimos el acceso mediante métodos <code>public</code>. 
+                Esto nos aporta dos ventajas enormes:</p>
             <ol>
-                <li><strong>PRE-ORDEN:</strong> Raíz $\rightarrow$ Izquierda $\rightarrow$ Derecha.</li>
-                <li><strong>IN-ORDEN:</strong> Izquierda $\rightarrow$ Raíz $\rightarrow$ Derecha. <em>(Importante: En un ABB, este recorrido devuelve los datos ordenados).</em></li>
-                <li><strong>POST-ORDEN:</strong> Izquierda $\rightarrow$ Derecha $\rightarrow$ Raíz.</li>
+                <li><strong>Facilidad de modificación:</strong> Mientras no cambiemos el nombre ni los parámetros de los métodos <code>public</code>, podemos 
+                    reemplazar por completo la estructura de datos interna para optimizar el rendimiento sin romper ni una sola línea de código del resto del videojuego.</li>
+                <li><strong>Reutilización:</strong> Un TAD bien encapsulado se puede copiar y pegar en nuestro próximo proyecto de Unity y funcionará de inmediato sin que tengamos 
+                    que recordar cómo estaba programado por dentro.</li>
             </ol>
 
-            <h3>5. Árbol Binario de Búsqueda (ABB)</h3>
-            <p>El ABB es una estructura diseñada para optimizar las búsquedas, resolviendo la ineficiencia de inserción/borrado que sufren los arrays ordenados tradicionales.</p>
+            <h4>1.4. Especificación e Implementación de nuestro primer TAD: La Mochila</h4>
+            <p>Para especificar un TAD antes de programarlo, basta con describir dos partes: <strong>sus objetos de datos</strong> y <strong>las operaciones</strong> que actúan sobre ellos.</p>
 
-            <h4>Reglas de Construcción</h4>
+            <div class="callout definition">
+                <div class="callout-title"><i class="fa-solid fa-scroll"></i> Especificación: EL TAD MOCHILA</div>
+                <p><strong>Objetos de datos:</strong> Una colección lineal de nombres de objetos (<code>string</code>) con una capacidad máxima de $N$ huecos.</p>
+                <p><strong>Operaciones (métodos de acceso):</strong></p>
+                <ul>
+                    <li><code>Guardar(item)</code>: Si la mochila no está llena, añade el objeto en el primer hueco disponible y devuelve <code>true</code>; si está llena, devuelve <code>false</code>.</li>
+                    <li><code>SacarUltimo()</code>: Si no está vacía, extrae y devuelve el último objeto guardado.</li>
+                    <li><code>VerCantidad()</code>: Devuelve el número entero de objetos almacenados actualmente.</li>
+                    <li><code>EstaVacia()</code> / <code>EstaLlena()</code>: Indica si hay $0$ objetos o si hemos alcanzado la capacidad $N$.</li>
+                </ul>
+            </div>
+
+            <p>Veamos cómo traducimos esta especificación a C# encapsulando con <code>private</code>:</p>
+
+            <pre><code class="language-csharp">public class MochilaTAD {
+    // === ENCAPSULACIÓN ===
+    // Nadie fuera de esta clase puede tocar directamente este array ni el contador
+    private string[] huecos;
+    private int cantidadActual;
+
+    // Constructor: inicializa la estructura interna con capacidad máxima N
+    public MochilaTAD(int capacidadMaxima) {
+        huecos = new string[capacidadMaxima];
+        cantidadActual = 0;
+    }
+
+    // === MÉTODOS DE ACCESO ===
+    public bool EstaVacia() {
+        return cantidadActual == 0;
+    }
+
+    public bool EstaLlena() {
+        return cantidadActual == huecos.Length;
+    }
+
+    public int VerCantidad() {
+        return cantidadActual;
+    }
+
+    public bool Guardar(string nuevoItem) {
+        if (EstaLlena()) {
+            return false; // No cabe más en la mochila
+        }
+        huecos[cantidadActual] = nuevoItem;
+        cantidadActual++;
+        return true;
+    }
+
+    public string SacarUltimo() {
+        if (EstaVacia()) {
+            return null;
+        }
+        cantidadActual--;
+        string itemExtraido = huecos[cantidadActual];
+        huecos[cantidadActual] = null; // Limpiamos la casilla
+        return itemExtraido;
+    }
+}</code></pre>
+
+            <h3>2. Modelo de Memoria: ¿Estructuras Estáticas o Dinámicas?</h3>
+            <p>Para decidir la estructura de datos de nuestros TADs, necesitamos comprender cómo organiza la memoria un ordenador cuando ejecutamos un juego en Unity.</p>
+
+            <h4>2.1. Memoria Principal (RAM) vs. Almacenamiento Secundario (Disco)</h4>
+            <p>La memoria se divide en dos grandes niveles:</p>
             <ul>
-                <li><strong>Clave Única:</strong> Generalmente cada nodo tiene un identificador único.</li>
-                <li><strong>Menores a la Izquierda:</strong> Todos los valores del subárbol izquierdo son menores que la raíz.</li>
-                <li><strong>Mayores a la Derecha:</strong> Todos los valores del subárbol derecho son mayores que la raíz.</li>
+                <li><strong>Memoria principal (RAM):</strong> Posee <strong>acceso directo</strong>. Esto significa que leer o escribir en cualquier posición de la memoria RAM tarda una cantidad de tiempo fija $O(1)$, independiente de las posiciones a las que hayamos accedido antes. Como es varios órdenes de magnitud más rápida que el disco duro, aquí residen las estructuras que usamos durante la partida, llamadas <strong>estructuras de datos internas</strong>.</li>
+                <li><strong>Almacenamiento secundario (SSD / Disco):</strong> Se utiliza para guardar datos demasiado grandes para caber de golpe en la RAM o que deben conservarse al cerrar el juego (partidas guardadas, bases de datos de ítems, mundos abiertos en <em>streaming</em>). A estas las llamamos <strong>estructuras de datos externas</strong>. En esta asignatura nos centraremos siempre en las estructuras de datos internas.</li>
             </ul>
 
-            <h4>Operaciones Básicas</h4>
+            <h4>2.2. El Mapa Lógico de la Memoria Principal</h4>
+            <p>Podemos imaginar la memoria RAM de nuestro juego como un gran vector unidimensional de <em>bytes</em> dividido en tres zonas fundamentales:</p>
+
+            <div class="memory-layout">
+                <div class="mem-zone mem-static">
+                    <i class="fa-solid fa-lock"></i> MEMORIA ESTÁTICA (Zona Alta)<br>
+                    <small style="font-weight: normal;">Tamaño fijo decidido al compilar (variables globales/estáticas)</small>
+                </div>
+                <div class="mem-zone mem-heap">
+                    <i class="fa-solid fa-cubes"></i> MEMORIA LIBRE / MONTÍCULO (Heap)<br>
+                    <small style="font-weight: normal;">Asignación dinámica en plena partida (Listas, Colas, Nodos con <code>new</code>)</small><br>
+                    <span style="font-size: 1.2rem;">&#8595; Crece hacia abajo &#8595;</span>
+                </div>
+                <div class="mem-zone mem-free">
+                    Espacio disponible en RAM
+                </div>
+                <div class="mem-zone mem-stack">
+                    <span style="font-size: 1.2rem;">&#8593; Crece hacia arriba &#8593;</span><br>
+                    <i class="fa-solid fa-layer-group"></i> PILA DE EJECUCIÓN (Call Stack - Zona Baja)<br>
+                    <small style="font-weight: normal;">Registros de activación de funciones y llamadas recursivas</small>
+                </div>
+            </div>
+
+            <ol>
+                <li><strong>Memoria Estática:</strong> Su espacio queda fijado durante la compilación y no cambia en toda la partida.</li>
+                <li><strong>Pila de Ejecución (<em>Call Stack</em>):</strong> Como vimos en el Tema 2 al estudiar la recursividad, cada vez que llamamos a una función se crea un <strong>registro de activación</strong> en la pila con sus parámetros, variables locales y la dirección a la que debe volver el programa al terminar. Cuando la función acaba, su registro se destruye automáticamente y la pila mengua.</li>
+                <li><strong>Memoria Libre (o <em>Montículo / Heap</em>):</strong> Aquí es donde se reserva espacio para las estructuras de datos que se crean <strong>en mitad de la ejecución</strong> del videojuego (cada vez que usamos la palabra clave <code>new</code> para crear nodos, listas, enemigos, etc.).</li>
+            </ol>
+
+            <p>Observa que la <strong>Memoria Libre</strong> y la <strong>Pila de Ejecución</strong> crecen la una contra la otra. Si un juego hace infinitas llamadas recursivas (<em>Stack Overflow</em>) o si pide memoria dinámica sin parar y nunca la devuelve (<em>Out of Memory</em>), ambas zonas chocan y el videojuego se cierra por error de memoria.</p>
+
+            <h4>2.3. Estructuras Estáticas (Arrays) vs. Dinámicas (Listas, Pilas y Colas)</h4>
+            <p>Con este mapa en mente, distinguimos dos familias de estructuras lineales:</p>
             <ul>
-                <li><strong>Búsqueda:</strong> Dicotómica. Se compara el valor con la raíz y se desciende por la izquierda o derecha.</li>
-                <li><strong>Inserción:</strong> Se busca la posición vacía (NULL) correcta respetando el orden y se enlaza el nuevo nodo.</li>
-                <li><strong>Eliminación:</strong> Es el proceso más complejo. Tiene tres casos:
+                <li><strong>Estructuras de datos estáticas (el Array clásico <code>T[]</code>):</strong> La cantidad de memoria que ocupan se fija al crearlas y <strong>no puede cambiar</strong>. Por ejemplo, <code>new string[6]</code> reserva exactamente 6 casillas pegadas en memoria.
                     <ul>
-                        <li><em>Hoja:</em> Se elimina directamente.</li>
-                        <li><em>1 Hijo:</em> El hijo sube a ocupar el puesto del padre.</li>
-                        <li><em>2 Hijos:</em> Se sustituye por el nodo 'inmediato inferior' (el mayor del subárbol izquierdo) o el 'inmediato superior' para mantener la coherencia matemática.</li>
+                        <li><em>Ventaja:</em> Como las casillas están contiguas, el procesador las lee a velocidad ultrarrápida y podemos saltar a cualquier casilla <code>array[i]</code> en tiempo constante $O(1)$.</li>
+                        <li><em>Problema:</em> Si no sabemos de antemano cuántos enemigos o proyectiles habrá en pantalla, un array fijo se quedará corto (provocando un error al intentar meter uno más) o, si reservamos 10.000 casillas «por si acaso», desperdiciaremos memoria durante toda la partida.</li>
                     </ul>
                 </li>
+                <li><strong>Estructuras de datos dinámicas (Listas, Pilas y Colas):</strong> Su tamaño no queda fijado de antemano. Solicitan espacio a la <strong>Memoria Libre</strong> a medida que el jugador recoge objetos o aparecen enemigos, y lo sueltan cuando ya no se necesitan.</li>
             </ul>
 
-            <h3 id="abb">Visualización Interactiva: Construcción de un ABB</h3>  
-            <p>Comprender cómo se organiza un Árbol Binario de Búsqueda es mucho más fácil viéndolo en acción. Utiliza este simulador para <strong>Insertar</strong> nuevos nodos, <strong>Buscar</strong> elementos o <strong>Eliminar</strong> datos existentes. Observa cómo el algoritmo toma decisiones y, en especial, cómo resuelve los 3 casos de la <strong>eliminación</strong>.</p>
+            <h4>2.4. Devolver la Memoria Libre: Recogida de Basura (Garbage Collector)</h4>
+            <p>Mientras que la Pila de Ejecución se limpia sola al terminar cada método, ¿qué ocurre con los datos que creamos en la <strong>Memoria Libre</strong> cuando ya no nos hacen falta (por ejemplo, cuando eliminamos un nodo de una lista)?</p>
+            <ul>
+                <li><strong>Enfoque explícito (manual):</strong> En lenguajes como C o C++, es responsabilidad del programador devolver manualmente cada bloque a la memoria libre. Si el programador se olvida, esa memoria queda bloqueada para siempre (fuga de memoria o <em>memory leak</em>).</li>
+                <li><strong>Enfoque implícito (Recogida de Basura / <em>Garbage Collection</em>):</strong> Es el enfoque que utiliza C# en Unity. Cuando desconectamos un elemento de una lista o cola dinámica y ninguna variable apunta ya a él, ese bloque queda «huérfano» en la Memoria Libre. Periódicamente, un sistema automático de C# llamado <strong>Recolector de Basura (Garbage Collector o GC)</strong> rastrea la Memoria Libre, detecta esos datos abandonados y los limpia para recuperar espacio.</li>
+            </ul>
 
-            <div class="canvas-container" style="height: auto; padding-bottom: 2rem; display: flex; flex-direction: column; align-items: center;">
-                
-                <!-- Panel de controles -->
-                <div style="width: 100%; max-width: 800px; display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; padding: 1rem; background-color: var(--sidebar-bg); border: 1px solid var(--sidebar-border); border-radius: 6px; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; gap: 0.5rem; align-items: center;">
-                        <input type="number" id="abb-input" placeholder="Ej: 50" style="padding: 0.5rem; border: 1px solid var(--sidebar-border); border-radius: 4px; width: 80px;">
-                        <button id="btn-insert" style="padding: 0.5rem 1rem; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Insertar</button>
-                        <button id="btn-search" style="padding: 0.5rem 1rem; background-color: var(--accent-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Buscar</button>
-                        <button id="btn-delete" style="padding: 0.5rem 1rem; background-color: #e53e3e; color: white; border: none; border-radius: 4px; cursor: pointer;">Eliminar</button>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <label for="abb-speed" style="font-size: 0.9rem; font-weight: bold;">Velocidad:</label>
-                        <input type="range" id="abb-speed" min="1" max="10" value="5">
-                    </div>
+            <div class="callout challenge">
+                <div class="callout-title"><i class="fa-solid fa-triangle-exclamation"></i> Problema del Garbage Collector</div>
+                <p>Aunque el Recolector de Basura de C# nos ahorra liberar la memoria a mano, <strong>no es gratis</strong>. Cada vez que la 
+                    Memoria Libre acumula demasiada «basura» (nodos eliminados, listas temporales creadas dentro del método <code>Update()</code> 
+                    en cada fotograma), el Recolector de Basura ralentiza la ejecución del juego para limpiar la RAM, esto puede afectar a la performance. Por eso, en videojuegos usamos <strong>Arrays fijos</strong> 
+                    cuando conocemos el tamaño máximo, y <strong>Listas/Colas dinámicas</strong> solo cuando el volumen de datos es realmente variable, 
+                    evitando crear y destruir estructuras nuevas en cada fotograma.</p>
+            </div>
+
+            <h4>2.5. Tabla de Decisión: ¿Qué estructura lineal elegir en Unity?</h4>
+            <p>En la siguiente tabla comparamos el coste habitual en Notación $O$ Grande y el uso recomendado de cada estructura lineal que construiremos a continuación:</p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Estructura Lineal</th>
+                        <th>Tipo de Memoria</th>
+                        <th>Acceso por índice</th>
+                        <th>Insertar / Borrar en medio</th>
+                        <th>Cuándo usarla en tu videojuego</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Array Fijo (<code>T[]</code>)</strong></td>
+                        <td>Estática (tamaño fijo contiguo)</td>
+                        <td>$O(1)$ directo</td>
+                        <td>No permite cambiar tamaño</td>
+                        <td>Cantidades fijas conocidas: las 6 ranuras de hechizos equipados, casillas de un tablero de ajedrez o puntos fijos de patrulla.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lista Basada en Array</strong></td>
+                        <td>Dinámica (redimensiona un array interno)</td>
+                        <td>$O(1)$ directo</td>
+                        <td>$O(n)$ (desplaza elementos)</td>
+                        <td>Inventarios generales o listas de enemigos activos donde leemos mucho por posición y añadimos/borramos sobre todo al final.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lista Enlazada (Nodos)</strong></td>
+                        <td>Dinámica (nodos dispersos en Memoria Libre)</td>
+                        <td>$O(n)$ secuencial</td>
+                        <td>$O(1)$ cambiando enlaces*</td>
+                        <td>Secuencias de eventos, colas de turnos o combos donde insertamos, quitamos o reordenamos elementos intermedios constantemente.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pila (LIFO) / Cola (FIFO)</strong></td>
+                        <td>Dinámica o Acotada</td>
+                        <td>Solo extremo ($O(1)$)</td>
+                        <td>No aplica (solo extremos)</td>
+                        <td><strong>Pila:</strong> Deshacer movimientos (<em>Undo</em>), historial de menús.<br><strong>Cola:</strong> Oleadas de enemigos, cola de diálogos o <em>buffer</em> de botones.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><small><em>*Nota: En una lista enlazada, reconectar los enlaces al insertar o mover cuesta $O(1)$, aunque localizar primero el nodo buscando desde el principio cuesta $O(n)$.</em></small></p>
+
+            <h3>3. Construcción de nuestras propias Estructuras Lineales</h3>
+            <p>Ahora que conocemos la teoría de TADs y el mapa de memoria, vamos a construir desde cero nuestras propias estructuras lineales en C# para entender qué ocurre exactamente cuando encapsulamos bien.</p>
+
+            <h4>3.1. Lista Basada en Array (Cómo funciona <code>List</code> por dentro)</h4>
+            <p>¿Cómo podemos crear una lista donde el jugador pueda meter elementos sin límite si los arrays de C# tienen tamaño fijo? El truco consiste en guardar un array privado y, cuando se llene, <strong>crear (en la Memoria Libre porque ya se estaría ejecutando el juego) un array nuevo con el doble de capacidad</strong>, 
+                copiar los datos antiguos y desechar el array viejo (que recogerá el <em>Garbage Collector</em>).</p>
+
+            <p>Además, si queremos insertar o borrar un objeto en mitad de la lista sin dejar huecos vacíos, tendremos que <strong>empujar (desplazar)</strong> 
+                todos los elementos siguientes una casilla hacia la derecha o hacia la izquierda, lo que tiene un coste lineal $O(n)$:</p>
+
+            <pre><code class="language-csharp">public class MiListaArray {
+    private string[] datos;
+    private int cantidad;
+
+    public MiListaArray(int capacidadInicial = 4) {
+        datos = new string[capacidadInicial];
+        cantidad = 0;
+    }
+
+    public int Cantidad() {
+        return cantidad;
+    }
+
+    // Acceso directo e instantáneo: Coste O(1)
+    public string Obtener(int indice) {
+        if (indice &lt; 0 || indice &gt;= cantidad) return null;
+        return datos[indice];
+    }
+
+    // Añadir al final: Coste O(1) casi siempre, O(n) si toca duplicar el array
+    public void Añadir(string nuevoDato) {
+        if (cantidad == datos.Length) {
+            DuplicarCapacidad();
+        }
+        datos[cantidad] = nuevoDato;
+        cantidad++;
+    }
+
+    // Insertar en una posición intermedia: Coste O(n) por desplazar elementos
+    public void InsertarEn(int indice, string nuevoDato) {
+        if (indice &lt; 0 || indice &gt; cantidad) return;
+
+        if (cantidad == datos.Length) {
+            DuplicarCapacidad();
+        }
+
+        // Desplazamos los elementos una casilla a la derecha para abrir hueco
+        //Aqui recorremos el array al reves para asi olvidarnos de no pasarnos con el indice
+        for (int i = cantidad; i &gt; indice; i--) {
+            datos[i] = datos[i - 1];
+        }
+
+        datos[indice] = nuevoDato;
+        cantidad++;
+    }
+
+    // Eliminar de una posición intermedia: Coste O(n) por tapar el hueco
+    public void EliminarEn(int indice) {
+        if (indice &lt; 0 || indice &gt;= cantidad) return;
+
+        // Desplazamos los elementos a la izquierda para tapar el hueco
+        for (int i = indice; i &lt; cantidad - 1; i++) {
+            datos[i] = datos[i + 1];
+        }
+
+        cantidad--;
+        datos[cantidad] = null; // Evitamos retener basura en memoria
+    }
+
+    // Rutina privada auxiliar: pide un bloque el doble de grande en Memoria Libre
+    private void DuplicarCapacidad() {
+        string[] nuevoArray = new string[datos.Length * 2];
+        for (int i = 0; i &lt; cantidad; i++) {
+            nuevoArray[i] = datos[i];
+        }
+        datos = nuevoArray; // El array antiguo queda para el Garbage Collector
+    }
+}</code></pre>
+
+            <h4>3.2. Lista Enlazada (<code>MiListaEnlazada</code>) con Nodos en Memoria Libre</h4>
+            <p>Para evitar el coste de redimensionar arrays o desplazar cientos de casillas cada vez que insertamos o cambiamos de sitio un elemento en mitad de una secuencia, podemos diseñar una estructura 100% dinámica: la <strong>Lista Enlazada</strong>.</p>
+            <p>En una lista enlazada los datos no están pegados en la memoria. Cada elemento vive dentro de un objeto llamado <strong><code>Nodo</code></strong> que se aloja en cualquier hueco disponible de la <strong>Memoria Libre</strong>. Cada nodo guarda dos cosas:</p>
+            <ol>
+                <li>El <strong>dato</strong> (por ejemplo, el nombre de un ataque o carta).</li>
+                <li>Una referencia o enlace (<strong><code>siguiente</code></strong>) que apunta a la dirección de memoria donde se encuentra el próximo nodo de la lista (o <code>null</code> si es el último).</li>
+            </ol>
+
+            <pre><code class="language-csharp">// Cada Nodo es una pieza independiente en la Memoria Libre (Heap)
+public class Nodo {
+    public string dato;
+    public Nodo siguiente;
+
+    public Nodo(string datoNodo) {
+        dato = datoNodo;
+        siguiente = null;
+    }
+}
+
+public class MiListaEnlazada {
+    //Protegemos la referencia al primero
+    private Nodo cabeza;
+    private int cantidad;
+
+    public MiListaEnlazada() {
+        cabeza = null;
+        cantidad = 0;
+    }
+
+    public int Cantidad() {
+        return cantidad;
+    }
+
+    // Insertar al principio es instantáneo O(1): ¡no desplazamos nada!
+    public void InsertarAlPrincipio(string nuevoDato) {
+        Nodo nuevoNodo = new Nodo(nuevoDato);
+        nuevoNodo.siguiente = cabeza; // El nuevo nodo apunta a la antigua cabeza
+        cabeza = nuevoNodo;           // La cabeza pasa a ser el nuevo nodo
+        cantidad++;
+    }
+
+    // Insertar al final recorriendo los enlaces: Coste O(n)
+    public void InsertarAlFinal(string nuevoDato) {
+        Nodo nuevoNodo = new Nodo(nuevoDato);
+
+        if (cabeza == null) {
+            cabeza = nuevoNodo;
+        } else {
+            Nodo actual = cabeza;
+            // Avanzamos siguiendo las flechas hasta llegar al último nodo
+            while (actual.siguiente != null) {
+                actual = actual.siguiente;
+            }
+            actual.siguiente = nuevoNodo;
+        }
+        cantidad++;
+    }
+
+    // Eliminar la primera aparición de un dato puenteando su enlace
+    public bool Eliminar(string datoBuscado) {
+        if (cabeza == null) return false;
+
+        // Caso especial: el nodo a borrar es la propia cabeza
+        if (cabeza.dato == datoBuscado) {
+            cabeza = cabeza.siguiente; // El antiguo primer nodo queda para el GC
+            cantidad--;
+            return true;
+        }
+
+        Nodo actual = cabeza;
+        while (actual.siguiente != null) {
+            if (actual.siguiente.dato == datoBuscado) {
+                // Puenteamos el nodo a eliminar: el anterior apunta al siguiente del borrado
+                actual.siguiente = actual.siguiente.siguiente;
+                cantidad--;
+                return true;
+            }
+            actual = actual.siguiente;
+        }
+        return false;
+    }
+}</code></pre>
+
+            <div class="callout definition">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb"></i> La metáfora del tren de mercancías</div>
+                <p>Una <strong>Lista Enlazada</strong> es como un tren donde cada vagón (<code>Nodo</code>) solo sabe a qué vagón tiene enganchado detrás (<code>siguiente</code>). Si quieres meter un vagón nuevo en medio, no tienes que construir un tren nuevo: simplemente desenganchas el acople entre dos vagones y enganchas el nuevo en medio en tiempo $O(1)$. A cambio, si quieres saber qué lleva el vagón número 5, no puedes saltar directamente a él como en un array; tienes que entrar por la locomotora (<code>cabeza</code>) y caminar vagón por vagón ($O(n)$).</p>
+            </div>
+
+            <h4>3.3. TADs Lineales con Reglas Especiales: La Pila (LIFO) y la Cola (FIFO)</h4>
+            <p>Muchas mecánicas de los videojuegos no necesitan insertar ni buscar elementos en mitad de una lista, sino que funcionan bajo un orden estricto de entrada y salida. Restringiendo las operaciones de una lista obtenemos dos TADs clásicos:</p>
+
+            <h5>A) El TAD Pila (Stack - LIFO: <em>Last In, First Out</em>)</h5>
+            <p>En una <strong>Pila</strong> (como una pila de platos o un mazo de cartas boca abajo), el <strong>último elemento en entrar es siempre el primero en salir</strong>. Solo podemos interactuar con la <strong>cima</strong> de la pila mediante dos operaciones de coste $O(1)$:</p>
+            <ul>
+                <li><code>Apilar(dato)</code> (<em>Push</em>): Coloca un elemento nuevo encima de la cima.</li>
+                <li><code>Desapilar()</code> (<em>Pop</em>): Retira y devuelve el elemento que está en la cima.</li>
+            </ul>
+            <p><strong>Aplicación en Unity:</strong> El botón de «Deshacer movimiento» (<em>Undo</em>) en un juego de puzles táctico. Cada vez que el jugador se mueve, apilamos su casilla anterior; si pulsa <em>Deshacer</em>, desapilamos la cima y el personaje retrocede exactamente por el camino inverso:</p>
+
+            <pre><code class="language-csharp">// Implementación dinámica de una Pila de movimientos usando Nodos enlazados
+public class MiPilaMovimientos {
+    private Nodo cima; // Apunta siempre al último elemento apilado
+
+    public bool EstaVacia() {
+        return cima == null;
+    }
+
+    // Apilar (Push): Coste O(1)
+    public void Apilar(string movimiento) {
+        Nodo nuevo = new Nodo(movimiento);
+        nuevo.siguiente = cima;
+        cima = nuevo;
+    }
+
+    // Desapilar (Pop): Coste O(1)
+    public string Desapilar() {
+        if (EstaVacia()) return null;
+
+        string ultimoMovimiento = cima.dato;
+        cima = cima.siguiente; // La cima baja al plato inferior
+        return ultimoMovimiento;
+    }
+}</code></pre>
+
+            <h5>B) El TAD Cola (Queue - FIFO: <em>First In, First Out</em>)</h5>
+            <p>En una <strong>Cola</strong> (como la fila del cine), el <strong>primer elemento en llegar es el primero en salir</strong>. Los elementos nuevos entran siempre por el <strong>final</strong> y se extraen por el <strong>frente (principio)</strong>, ambos en tiempo constante $O(1)$ si guardamos una referencia a ambos extremos:</p>
+            <ul>
+                <li><code>Encolar(dato)</code> (<em>Enqueue</em>): Añade un elemento al final de la cola.</li>
+                <li><code>Desencolar()</code> (<em>Dequeue</em>): Extrae y devuelve el elemento que lleva más tiempo esperando en el frente.</li>
+            </ul>
+            <p><strong>Aplicación en Unity:</strong> Un generador de oleadas de enemigos (<em>Wave Spawner</em>) o una cola de cuadros de diálogo de un NPC:</p>
+
+            <pre><code class="language-csharp">// Implementación dinámica de una Cola guardando el frente y el final
+public class MiColaEnemigos {
+    private Nodo frente; // Por donde salen (Dequeue)
+    private Nodo final;  // Por donde entran (Enqueue)
+
+    public bool EstaVacia() {
+        return frente == null;
+    }
+
+    // Encolar al final: Coste O(1)
+    public void Encolar(string tipoEnemigo) {
+        Nodo nuevo = new Nodo(tipoEnemigo);
+        if (EstaVacia()) {
+            frente = nuevo;
+            final = nuevo;
+        } else {
+            final.siguiente = nuevo;
+            final = nuevo;
+        }
+    }
+
+    // Desencolar por el frente: Coste O(1)
+    public string Desencolar() {
+        if (EstaVacia()) return null;
+
+        string enemigoSiguiente = frente.dato;
+        frente = frente.siguiente;
+
+        // Si la cola se ha quedado vacía, limpiamos también la referencia final
+        if (frente == null) {
+            final = null;
+        }
+        return enemigoSiguiente;
+    }
+}</code></pre>
+            <!--
+            <h3>4. Visualización Interactiva: Laboratorio de Lista Enlazada y Memoria Libre</h3>
+            <p>En este laboratorio interactivo puedes manipular una <strong>Cola de Combo de Habilidades</strong> implementada como una <strong>Lista Enlazada</strong>. <strong>Arrastra y suelta con el ratón (o con el dedo)</strong> cualquiera de los nodos superiores para cambiarlo de posición en el combo.</p>
+            <p>Observa la diferencia fundamental entre las dos mitades del lienzo: arriba ves la <strong>Visión Lógica</strong> (el orden del combo siguiendo las flechas <code>siguiente</code>), mientras que abajo ves la <strong>Memoria Libre (Heap)</strong> de la RAM. ¡Comprueba cómo al arrastrar un ataque a otra posición <strong>los datos NO se mueven de su celda física en la Memoria Libre</strong>, sino que únicamente se reconectan las flechas de memoria!</p>
+
+            <div class="canvas-container" style="display: flex; flex-direction: column; align-items: center; height: auto; padding-bottom: 1.5rem;">
+                <div class="lab-controls">
+                    <button id="btn-add-node" class="lab-btn"><i class="fa-solid fa-plus"></i> Añadir Habilidad (<code>new Nodo</code>)</button>
+                    <button id="btn-remove-last" class="lab-btn danger"><i class="fa-solid fa-trash"></i> Borrar Último Nodo</button>
+                    <button id="btn-run-gc" class="lab-btn success"><i class="fa-solid fa-broom"></i> Ejecutar Garbage Collector (GC)</button>
+                    <button id="btn-reset-lab" class="lab-btn secondary"><i class="fa-solid fa-rotate-left"></i> Reiniciar</button>
                 </div>
 
-                <!-- Barra de estado / Consola -->
-                <div id="abb-msg" style="width: 100%; max-width: 800px; padding: 1rem; margin-bottom: 1rem; background-color: var(--code-bg); border-left: 4px solid var(--accent-color); font-family: monospace; font-size: 0.95rem; font-weight: bold; border-radius: 0 6px 6px 0;">
-                    Esperando acción...
-                </div>
+                <canvas id="canvas-lista" width="760" height="450" style="max-width: 100%; height: auto; background-color: var(--code-bg); border-radius: 6px; cursor: grab; touch-action: none;"></canvas>
 
-                <!-- Lienzo del árbol -->
-                <canvas id="canvas-abb" width="800" height="400" style="max-width: 100%; background-color: var(--bg-color); border: 1px solid var(--sidebar-border); border-radius: 6px;"></canvas>
+                <div class="lab-stats">
+                    <div class="stat-card">
+                        <strong><i class="fa-solid fa-diagram-project" style="color: #38a169;"></i> Última operación en Lista Enlazada:</strong>
+                        <p id="stat-linked" style="margin: 0.4rem 0 0 0;">Arrastra un nodo de la fila superior para cambiar su orden en el combo.</p>
+                    </div>
+                    <div class="stat-card">
+                        <strong><i class="fa-solid fa-table-cells" style="color: #ed8936;"></i> Comparativa en Array Estático:</strong>
+                        <p id="stat-array" style="margin: 0.4rem 0 0 0;">En un array contiguo, mover un elemento obliga a desplazar en RAM las casillas intermedias.</p>
+                    </div>
+                </div>
             </div>
 
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
-                    const canvas = document.getElementById('canvas-abb');
+                    const canvas = document.getElementById('canvas-lista');
                     const ctx = canvas.getContext('2d');
-                    const input = document.getElementById('abb-input');
-                    const msg = document.getElementById('abb-msg');
-                    const speedSlider = document.getElementById('abb-speed');
-                    
-                    const btnInsert = document.getElementById('btn-insert');
-                    const btnSearch = document.getElementById('btn-search');
-                    const btnDelete = document.getElementById('btn-delete');
+                    const statLinked = document.getElementById('stat-linked');
+                    const statArray = document.getElementById('stat-array');
 
-                    let root = null;
-                    let isAnimating = false;
+                    const catalogoHabilidades = [
+                        { nombre: 'Espadazo', color: '#e53e3e' },
+                        { nombre: 'Escudo', color: '#3182ce' },
+                        { nombre: 'Fuego', color: '#dd6b20' },
+                        { nombre: 'Dash', color: '#38a169' },
+                        { nombre: 'Rayo', color: '#d69e2e' },
+                        { nombre: 'Poción', color: '#805ad5' },
+                        { nombre: 'Hielo', color: '#00b5d8' }
+                    ];
 
-                    // Colores del tema
-                    const colorNode = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-bg').trim();
-                    const colorText = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
-                    const colorLine = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-border').trim();
-                    const colorHighlight = '#fbd38d'; // Naranja suave (Evaluando)
-                    const colorSuccess = '#68d391';   // Verde (Encontrado/Insertado)
-                    const colorDanger = '#fc8181';    // Rojo (Eliminado/Error)
+                    // 12 celdas simuladas de Memoria Libre (Heap)
+                    const TOTAL_CELLS = 12;
+                    let heapCells = [];
+                    // Lista lógica: guarda los índices de las celdas de heap en orden de enlace
+                    let linkedOrder = [];
+                    let dragState = null; // { logicalIndex, mouseX, mouseY }
+                    let hoverTargetIndex = null;
 
-                    class Node {
-                        constructor(value) {
-                            this.value = value;
-                            this.left = null;
-                            this.right = null;
-                            this.x = 0;
-                            this.y = 0;
+                    function inicializarLaboratorio() {
+                        heapCells = [];
+                        for (let i = 0; i < TOTAL_CELLS; i++) {
+                            heapCells.push({
+                                addr: '0x' + ((i + 1) * 8).toString(16).toUpperCase().padStart(2, '0'),
+                                state: 'free', // 'free', 'active', 'garbage'
+                                nombre: '',
+                                color: '#718096'
+                            });
                         }
+                        linkedOrder = [];
+                        // Colocamos 4 nodos iniciales en celdas salteadas del Heap para que se vea que no son contiguas
+                        const celdasIniciales = [1, 4, 2, 7];
+                        celdasIniciales.forEach((cellIdx, idx) => {
+                            const hab = catalogoHabilidades[idx];
+                            heapCells[cellIdx].state = 'active';
+                            heapCells[cellIdx].nombre = hab.nombre;
+                            heapCells[cellIdx].color = hab.color;
+                            linkedOrder.push(cellIdx);
+                        });
+
+                        statLinked.innerHTML = 'Lista inicializada con 4 nodos enlazados en la Memoria Libre.';
+                        statArray.innerHTML = 'Arrastra cualquier nodo superior hacia la izquierda o derecha para comparar costes.';
+                        dibujarEscena();
                     }
 
-                    // --- FUNCIONES DE DIBUJO ---
-                    function updatePositions(node, x, y, offset) {
-                        if (!node) return;
-                        node.x = x;
-                        node.y = y;
-                        updatePositions(node.left, x - offset, y + 60, offset / 2);
-                        updatePositions(node.right, x + offset, y + 60, offset / 2);
+                    function obtenerLayoutNodos() {
+                        const n = linkedOrder.length;
+                        const boxW = 96;
+                        const boxH = 66;
+                        const gap = 24;
+                        const totalW = n * boxW + Math.max(0, n - 1) * gap;
+                        const startX = Math.max(20, (canvas.width - totalW) / 2);
+                        const y = 82;
+
+                        return linkedOrder.map((heapIdx, i) => ({
+                            logicalIndex: i,
+                            heapIdx: heapIdx,
+                            x: startX + i * (boxW + gap),
+                            y: y,
+                            w: boxW,
+                            h: boxH
+                        }));
                     }
 
-                    function drawTree(highlightNode = null, color = colorHighlight, secondaryHighlight = null, secondaryColor = colorSuccess) {
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        if (root) {
-                            updatePositions(root, canvas.width / 2, 40, canvas.width / 4);
-                            drawNode(root, highlightNode, color, secondaryHighlight, secondaryColor);
-                        }
-                    }
-
-                    function drawNode(node, highlightNode, color, secondaryHighlight, secondaryColor) {
-                        if (!node) return;
-
-                        ctx.strokeStyle = colorLine;
-                        ctx.lineWidth = 2;
-                        if (node.left) {
-                            ctx.beginPath();
-                            ctx.moveTo(node.x, node.y);
-                            ctx.lineTo(node.left.x, node.left.y);
-                            ctx.stroke();
-                            drawNode(node.left, highlightNode, color, secondaryHighlight, secondaryColor);
-                        }
-                        if (node.right) {
-                            ctx.beginPath();
-                            ctx.moveTo(node.x, node.y);
-                            ctx.lineTo(node.right.x, node.right.y);
-                            ctx.stroke();
-                            drawNode(node.right, highlightNode, color, secondaryHighlight, secondaryColor);
-                        }
-
+                    function dibujarFlecha(x1, y1, x2, y2, color) {
+                        ctx.save();
+                        ctx.strokeStyle = color;
+                        ctx.fillStyle = color;
+                        ctx.lineWidth = 2.2;
                         ctx.beginPath();
-                        ctx.arc(node.x, node.y, 18, 0, Math.PI * 2);
-                        
-                        // Selección de colores para la animación
-                        if (node === highlightNode) {
-                            ctx.fillStyle = color;
-                        } else if (node === secondaryHighlight) {
-                            ctx.fillStyle = secondaryColor;
-                        } else {
-                            ctx.fillStyle = colorNode;
-                        }
-                        
-                        ctx.fill();
-                        ctx.strokeStyle = colorLine;
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
                         ctx.stroke();
 
-                        ctx.fillStyle = (node === highlightNode || node === secondaryHighlight) ? '#000' : colorText;
+                        const ang = Math.atan2(y2 - y1, x2 - x1);
+                        const headLen = 8;
+                        ctx.beginPath();
+                        ctx.moveTo(x2, y2);
+                        ctx.lineTo(x2 - headLen * Math.cos(ang - Math.PI / 6), y2 - headLen * Math.sin(ang - Math.PI / 6));
+                        ctx.lineTo(x2 - headLen * Math.cos(ang + Math.PI / 6), y2 - headLen * Math.sin(ang + Math.PI / 6));
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.restore();
+                    }
+
+                    function dibujarRectRedondeado(x, y, w, h, r, fill, stroke, lineDash = []) {
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.roundRect(x, y, w, h, r);
+                        if (fill) {
+                            ctx.fillStyle = fill;
+                            ctx.fill();
+                        }
+                        if (stroke) {
+                            ctx.strokeStyle = stroke;
+                            ctx.lineWidth = 2;
+                            ctx.setLineDash(lineDash);
+                            ctx.stroke();
+                        }
+                        ctx.restore();
+                    }
+
+                    function dibujarEscena() {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                        const isDark = document.documentElement.classList.contains('dark-mode');
+                        const textColor = isDark ? '#e2e8f0' : '#cbd5e0';
+                        const subTextColor = '#a0aec0';
+
+                        // Título Zona 1: Visión Lógica
+                        ctx.fillStyle = textColor;
                         ctx.font = 'bold 14px sans-serif';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.fillText(node.value, node.x, node.y);
-                    }
+                        ctx.fillText('1. VISIÓN LÓGICA: Combo en Lista Enlazada (Arrastra un nodo para cambiar su posición)', 20, 28);
 
-                    const getDelay = () => (11 - speedSlider.value) * 150;
-                    const sleep = ms => new Promise(r => setTimeout(r, ms));
+                        ctx.font = '12px sans-serif';
+                        ctx.fillStyle = subTextColor;
+                        const headAddr = linkedOrder.length > 0 ? heapCells[linkedOrder[0]].addr : 'null';
+                        ctx.fillText('Referencia cabeza -> ' + headAddr, 20, 50);
 
-                    function setControls(state) {
-                        isAnimating = !state;
-                        btnInsert.disabled = !state;
-                        btnSearch.disabled = !state;
-                        btnDelete.disabled = !state;
-                        input.disabled = !state;
-                    }
+                        const layouts = obtenerLayoutNodos();
 
-                    // --- INSERTAR ---
-                    async function insertNode(val) {
-                        if (!root) {
-                            root = new Node(val);
-                            msg.innerText = `Árbol vacío. Insertando ${val} como nodo raíz.`;
-                            drawTree(root, colorSuccess);
-                            await sleep(getDelay() * 2);
-                            return;
+                        // Dibujar ranura de destino si se está arrastrando
+                        if (dragState !== null && hoverTargetIndex !== null && layouts[hoverTargetIndex]) {
+                            const slot = layouts[hoverTargetIndex];
+                            dibujarRectRedondeado(slot.x - 4, slot.y - 4, slot.w + 8, slot.h + 8, 10, 'rgba(56, 161, 105, 0.18)', '#38a169', [5, 4]);
                         }
 
-                        let curr = root;
-                        while (true) {
-                            drawTree(curr, colorHighlight);
-                            if (val < curr.value) {
-                                msg.innerText = `¿${val} es menor que ${curr.value}? Sí, bajamos por la izquierda.`;
-                                await sleep(getDelay());
-                                if (!curr.left) {
-                                    curr.left = new Node(val);
-                                    drawTree(curr.left, colorSuccess);
-                                    msg.innerText = `Posición vacía. Insertando ${val} a la izquierda de ${curr.value}.`;
-                                    await sleep(getDelay() * 2);
-                                    break;
-                                }
-                                curr = curr.left;
-                            } else if (val > curr.value) {
-                                msg.innerText = `¿${val} es mayor que ${curr.value}? Sí, bajamos por la derecha.`;
-                                await sleep(getDelay());
-                                if (!curr.right) {
-                                    curr.right = new Node(val);
-                                    drawTree(curr.right, colorSuccess);
-                                    msg.innerText = `Posición vacía. Insertando ${val} a la derecha de ${curr.value}.`;
-                                    await sleep(getDelay() * 2);
-                                    break;
-                                }
-                                curr = curr.right;
+                        // Dibujar enlaces entre nodos lógicos
+                        for (let i = 0; i < layouts.length; i++) {
+                            const curr = layouts[i];
+                            if (i < layouts.length - 1) {
+                                const next = layouts[i + 1];
+                                dibujarFlecha(curr.x + curr.w, curr.y + curr.h / 2, next.x - 2, next.y + next.h / 2, '#63b3ed');
                             } else {
-                                msg.innerText = `El valor ${val} ya existe en el árbol.`;
-                                drawTree(curr, colorDanger);
-                                await sleep(getDelay() * 2);
+                                // Flecha hacia null
+                                dibujarFlecha(curr.x + curr.w, curr.y + curr.h / 2, curr.x + curr.w + 18, curr.y + curr.h / 2, '#a0aec0');
+                                ctx.fillStyle = '#fc8181';
+                                ctx.font = 'bold 11px monospace';
+                                ctx.fillText('null', curr.x + curr.w + 22, curr.y + curr.h / 2 + 4);
+                            }
+                        }
+
+                        // Dibujar cada nodo de la vista lógica (salvo el que está flotando por drag)
+                        layouts.forEach((box, idx) => {
+                            const isDragged = dragState && dragState.logicalIndex === idx;
+                            const cell = heapCells[box.heapIdx];
+                            const nextAddr = (idx < layouts.length - 1) ? heapCells[layouts[idx + 1].heapIdx].addr : 'null';
+
+                            const drawX = isDragged ? dragState.mouseX - box.w / 2 : box.x;
+                            const drawY = isDragged ? dragState.mouseY - box.h / 2 : box.y;
+
+                            if (isDragged) {
+                                // Sombra en el hueco original
+                                dibujarRectRedondeado(box.x, box.y, box.w, box.h, 8, 'rgba(160, 174, 192, 0.1)', '#718096', [4, 4]);
+                            }
+
+                            dibujarNodoLogico(drawX, drawY, box.w, box.h, cell, nextAddr, idx === 0, isDragged);
+                        });
+
+                        // Línea divisoria
+                        ctx.save();
+                        ctx.strokeStyle = 'rgba(160, 174, 192, 0.25)';
+                        ctx.beginPath();
+                        ctx.moveTo(20, 185);
+                        ctx.lineTo(canvas.width - 20, 185);
+                        ctx.stroke();
+                        ctx.restore();
+
+                        // Título Zona 2: Memoria Libre (Heap)
+                        ctx.fillStyle = textColor;
+                        ctx.font = 'bold 14px sans-serif';
+                        ctx.fillText('2. VISIÓN DE IMPLEMENTACIÓN: Mapa de la Memoria Libre (Heap en RAM)', 20, 212);
+
+                        ctx.font = '12px sans-serif';
+                        ctx.fillStyle = subTextColor;
+                        ctx.fillText('Observa que cada nodo permanece quieto en su dirección física de RAM aunque cambies el orden arriba:', 20, 232);
+
+                        // Dibujar cuadrícula de 12 celdas (2 filas de 6)
+                        const cols = 6;
+                        const cellW = 112;
+                        const cellH = 74;
+                        const gapX = 10;
+                        const gapY = 14;
+                        const gridStartX = (canvas.width - (cols * cellW + (cols - 1) * gapX)) / 2;
+                        const gridStartY = 250;
+
+                        heapCells.forEach((cell, cIdx) => {
+                            const col = cIdx % cols;
+                            const row = Math.floor(cIdx / cols);
+                            const cx = gridStartX + col * (cellW + gapX);
+                            const cy = gridStartY + row * (cellH + gapY);
+
+                            let fill = 'rgba(45, 55, 72, 0.55)';
+                            let stroke = '#4a5568';
+                            let dash = [];
+
+                            if (cell.state === 'active') {
+                                fill = cell.color + '33';
+                                stroke = cell.color;
+                            } else if (cell.state === 'garbage') {
+                                fill = 'rgba(229, 62, 62, 0.16)';
+                                stroke = '#e53e3e';
+                                dash = [4, 3];
+                            }
+
+                            dibujarRectRedondeado(cx, cy, cellW, cellH, 6, fill, stroke, dash);
+
+                            // Dirección de memoria
+                            ctx.fillStyle = '#cbd5e0';
+                            ctx.font = 'bold 11px monospace';
+                            ctx.fillText('RAM ' + cell.addr, cx + 8, cy + 16);
+
+                            if (cell.state === 'active') {
+                                const logicalIdx = linkedOrder.indexOf(cIdx);
+                                const nextAddr = (logicalIdx >= 0 && logicalIdx < linkedOrder.length - 1)
+                                    ? heapCells[linkedOrder[logicalIdx + 1]].addr
+                                    : 'null';
+
+                                ctx.fillStyle = '#ffffff';
+                                ctx.font = 'bold 13px sans-serif';
+                                ctx.fillText(cell.nombre, cx + 8, cy + 38);
+
+                                ctx.fillStyle = '#90cdf4';
+                                ctx.font = '11px monospace';
+                                ctx.fillText('sig -> ' + nextAddr, cx + 8, cy + 58);
+                            } else if (cell.state === 'garbage') {
+                                ctx.fillStyle = '#feb2b2';
+                                ctx.font = 'bold 11px sans-serif';
+                                ctx.fillText('BASURA (Sin ref.)', cx + 8, cy + 40);
+                                ctx.font = '10px sans-serif';
+                                ctx.fillText('Pendiente de GC', cx + 8, cy + 56);
+                            } else {
+                                ctx.fillStyle = '#718096';
+                                ctx.font = 'italic 11px sans-serif';
+                                ctx.fillText('Hueco Libre', cx + 8, cy + 44);
+                            }
+                        });
+                    }
+
+                    function dibujarNodoLogico(x, y, w, h, cell, nextAddr, esCabeza, isDragged) {
+                        const bg = isDragged ? cell.color : (cell.color + 'dd');
+                        const border = isDragged ? '#ffffff' : cell.color;
+                        dibujarRectRedondeado(x, y, w, h, 8, bg, border);
+
+                        // Etiqueta de dirección
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+                        ctx.fillRect(x, y, w, 19);
+
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = 'bold 10px monospace';
+                        ctx.fillText((esCabeza ? 'CABEZA ' : 'NODO ') + cell.addr, x + 6, y + 13);
+
+                        // Dato
+                        ctx.font = 'bold 13px sans-serif';
+                        ctx.fillText(cell.nombre, x + 8, y + 39);
+
+                        // Puntero siguiente
+                        ctx.fillStyle = '#e2e8f0';
+                        ctx.font = '11px monospace';
+                        ctx.fillText('sig: ' + nextAddr, x + 8, y + 57);
+                    }
+
+                    function obtenerCoordenadasCanvas(evt) {
+                        const rect = canvas.getBoundingClientRect();
+                        const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+                        const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+                        return {
+                            x: (clientX - rect.left) * (canvas.width / rect.width),
+                            y: (clientY - rect.top) * (canvas.height / rect.height)
+                        };
+                    }
+
+                    function iniciarArrastre(evt) {
+                        const pos = obtenerCoordenadasCanvas(evt);
+                        const layouts = obtenerLayoutNodos();
+                        for (let i = 0; i < layouts.length; i++) {
+                            const b = layouts[i];
+                            if (pos.x >= b.x && pos.x <= b.x + b.w && pos.y >= b.y && pos.y <= b.y + b.h) {
+                                dragState = {
+                                    logicalIndex: i,
+                                    mouseX: pos.x,
+                                    mouseY: pos.y
+                                };
+                                hoverTargetIndex = i;
+                                canvas.style.cursor = 'grabbing';
+                                evt.preventDefault();
+                                dibujarEscena();
                                 break;
                             }
                         }
                     }
 
-                    // --- BUSCAR ---
-                    async function searchNode(val) {
-                        if (!root) {
-                            msg.innerText = "El árbol está vacío.";
-                            return;
-                        }
-                        let curr = root;
-                        while (curr) {
-                            drawTree(curr, colorHighlight);
-                            if (val === curr.value) {
-                                msg.innerText = `¡Valor ${val} encontrado!`;
-                                drawTree(curr, colorSuccess);
-                                await sleep(getDelay() * 2);
-                                return;
+                    function moverArrastre(evt) {
+                        if (!dragState) return;
+                        evt.preventDefault();
+                        const pos = obtenerCoordenadasCanvas(evt);
+                        dragState.mouseX = pos.x;
+                        dragState.mouseY = pos.y;
+
+                        // Detectar sobre qué ranura lógica estamos
+                        const layouts = obtenerLayoutNodos();
+                        let closestIdx = dragState.logicalIndex;
+                        let minDist = Infinity;
+                        layouts.forEach((b, idx) => {
+                            const centerX = b.x + b.w / 2;
+                            const dist = Math.abs(pos.x - centerX);
+                            if (dist < minDist) {
+                                minDist = dist;
+                                closestIdx = idx;
                             }
-                            if (val < curr.value) {
-                                msg.innerText = `${val} es menor que ${curr.value}. Izquierda.`;
-                                curr = curr.left;
-                            } else {
-                                msg.innerText = `${val} es mayor que ${curr.value}. Derecha.`;
-                                curr = curr.right;
-                            }
-                            await sleep(getDelay());
-                        }
-                        msg.innerText = `El valor ${val} no existe en el árbol.`;
-                        drawTree();
+                        });
+                        hoverTargetIndex = closestIdx;
+                        dibujarEscena();
                     }
 
-                    // --- ELIMINAR ANIMADO (V2) ---
-                    async function deleteNode(val) {
-                        if (!root) {
-                            msg.innerText = "El árbol está vacío.";
+                    function finalizarArrastre() {
+                        if (!dragState) return;
+                        const origen = dragState.logicalIndex;
+                        const destino = hoverTargetIndex;
+
+                        if (destino !== null && origen !== destino) {
+                            const movedHeapIdx = linkedOrder.splice(origen, 1)[0];
+                            linkedOrder.splice(destino, 0, movedHeapIdx);
+                            const nombreMovido = heapCells[movedHeapIdx].nombre;
+                            const addrMovido = heapCells[movedHeapIdx].addr;
+                            const desplazamientosArray = Math.abs(destino - origen);
+
+                            statLinked.innerHTML = `Has movido <strong>${nombreMovido} (${addrMovido})</strong> de la posición ${origen} a la ${destino}. En la Memoria Libre <strong>no se ha movido ningún byte</strong>: solo se han actualizado las referencias <code>sig</code> en <strong>$O(1)$</strong>.`;
+                            statArray.innerHTML = `En un <strong>Array Fijo</strong>, cambiar ese elemento de la casilla ${origen} a la ${destino} habría obligado a empujar y sobrescribir <strong>${desplazamientosArray} casilla(s)</strong> en memoria ($O(n)$).`;
+                        }
+
+                        dragState = null;
+                        hoverTargetIndex = null;
+                        canvas.style.cursor = 'grab';
+                        dibujarEscena();
+                    }
+
+                    canvas.addEventListener('mousedown', iniciarArrastre);
+                    window.addEventListener('mousemove', moverArrastre);
+                    window.addEventListener('mouseup', finalizarArrastre);
+
+                    canvas.addEventListener('touchstart', iniciarArrastre, { passive: false });
+                    window.addEventListener('touchmove', moverArrastre, { passive: false });
+                    window.addEventListener('touchend', finalizarArrastre);
+
+                    // Botón: Añadir Nodo
+                    document.getElementById('btn-add-node').addEventListener('click', () => {
+                        if (linkedOrder.length >= 6) {
+                            statLinked.innerHTML = '<span style="color:#fc8181;">Máximo de 6 nodos alcanzado en el visualizador para mantener la claridad en pantalla.</span>';
+                            return;
+                        }
+                        // Buscar una celda libre en el Heap (elegimos una aleatoria entre las libres para ver la dispersión en RAM)
+                        const indicesLibres = [];
+                        heapCells.forEach((c, idx) => {
+                            if (c.state === 'free') indicesLibres.push(idx);
+                        });
+
+                        if (indicesLibres.length === 0) {
+                            statLinked.innerHTML = '<span style="color:#fc8181;">¡Memoria Libre llena! Ejecuta el Garbage Collector (GC) para limpiar las celdas con basura o borra algún nodo.</span>';
                             return;
                         }
 
-                        // 1. Fase de búsqueda
-                        let parent = null;
-                        let curr = root;
-                        let isLeftChild = false;
+                        const elegido = indicesLibres[Math.floor(Math.random() * indicesLibres.length)];
+                        const hab = catalogoHabilidades[Math.floor(Math.random() * catalogoHabilidades.length)];
 
-                        while (curr) {
-                            drawTree(curr, colorHighlight);
-                            msg.innerText = `Buscando nodo ${val} para eliminarlo...`;
-                            await sleep(getDelay());
+                        heapCells[elegido].state = 'active';
+                        heapCells[elegido].nombre = hab.nombre;
+                        heapCells[elegido].color = hab.color;
+                        linkedOrder.push(elegido);
 
-                            if (val === curr.value) break;
+                        statLinked.innerHTML = `<code>new Nodo("${hab.nombre}")</code> alojado en la dirección libre <strong>${heapCells[elegido].addr}</strong> y enganchado al final del combo.`;
+                        statArray.innerHTML = `Si un Array Fijo se hubiera llenado al añadir <strong>${hab.nombre}</strong>, habría tenido que pedir el doble de espacio y copiar todos los elementos ($O(n)$).`;
+                        dibujarEscena();
+                    });
 
-                            parent = curr;
-                            if (val < curr.value) {
-                                isLeftChild = true;
-                                curr = curr.left;
-                            } else {
-                                isLeftChild = false;
-                                curr = curr.right;
-                            }
-                        }
-
-                        if (!curr) {
-                            msg.innerText = `El valor ${val} no está en el árbol.`;
-                            drawTree();
+                    // Botón: Borrar último nodo
+                    document.getElementById('btn-remove-last').addEventListener('click', () => {
+                        if (linkedOrder.length === 0) {
+                            statLinked.innerHTML = 'La lista enlazada ya está vacía.';
                             return;
                         }
+                        const removedHeapIdx = linkedOrder.pop();
+                        const cell = heapCells[removedHeapIdx];
+                        cell.state = 'garbage';
 
-                        drawTree(curr, colorDanger);
-                        msg.innerText = `¡Nodo ${val} encontrado! Analizando sus hijos para aplicar el caso correcto...`;
-                        await sleep(getDelay() * 2);
-
-                        // CASO 1: Es una hoja (0 hijos)
-                        if (!curr.left && !curr.right) {
-                            msg.innerText = `CASO 1: El nodo es una hoja (0 hijos). Se elimina directamente.`;
-                            await sleep(getDelay() * 2);
-                            
-                            if (!parent) root = null;
-                            else if (isLeftChild) parent.left = null;
-                            else parent.right = null;
-                        }
-                        // CASO 2: Tiene 1 hijo
-                        else if (!curr.left || !curr.right) {
-                            let child = curr.left ? curr.left : curr.right;
-                            drawTree(curr, colorDanger, child, colorSuccess);
-                            msg.innerText = `CASO 2: Tiene 1 hijo (${child.value}). El hijo sube a ocupar su lugar.`;
-                            await sleep(getDelay() * 3);
-
-                            if (!parent) root = child;
-                            else if (isLeftChild) parent.left = child;
-                            else parent.right = child;
-                        }
-                        // CASO 3: Tiene 2 hijos
-                        else {
-                            msg.innerText = `CASO 3: Tiene 2 hijos. Buscando el sucesor inmediato (menor de los mayores)...`;
-                            await sleep(getDelay() * 2);
-
-                            let successorParent = curr;
-                            let successor = curr.right;
-                            
-                            drawTree(curr, colorDanger, successor, colorHighlight);
-                            msg.innerText = `Paso 1: Vamos un paso a la derecha al nodo ${successor.value}...`;
-                            await sleep(getDelay() * 1.5);
-
-                            while (successor.left) {
-                                successorParent = successor;
-                                successor = successor.left;
-                                drawTree(curr, colorDanger, successor, colorHighlight);
-                                msg.innerText = `Paso 2: Bajamos todo lo posible a la izquierda... analizando ${successor.value}`;
-                                await sleep(getDelay() * 1.5);
-                            }
-
-                            drawTree(curr, colorDanger, successor, colorSuccess);
-                            msg.innerText = `¡El sucesor es ${successor.value}! Intercambiamos los valores.`;
-                            await sleep(getDelay() * 2);
-
-                            // Intercambio visual
-                            curr.value = successor.value;
-                            drawTree(successor, colorDanger, curr, colorSuccess); 
-                            msg.innerText = `Valor copiado a la raíz. Ahora eliminamos el nodo redundante (que queda como hoja o con 1 hijo).`;
-                            await sleep(getDelay() * 2);
-
-                            // Eliminación del sucesor original
-                            if (successorParent.left === successor) {
-                                successorParent.left = successor.right;
-                            } else {
-                                successorParent.right = successor.right;
-                            }
-                        }
-
-                        drawTree();
-                        msg.innerText = `Nodo eliminado y árbol reestructurado correctamente.`;
-                    }
-
-                    // --- EVENTOS DE BOTONES ---
-                    btnInsert.addEventListener('click', async () => {
-                        const val = parseInt(input.value);
-                        if (isNaN(val)) return;
-                        setControls(false);
-                        await insertNode(val);
-                        input.value = '';
-                        drawTree();
-                        msg.innerText = "Esperando nueva acción...";
-                        setControls(true);
+                        statLinked.innerHTML = `Nodo <strong>${cell.nombre} (${cell.addr})</strong> desconectado de la lista. Observa abajo cómo su celda queda como <strong>Basura en el Heap</strong> hasta que pase el Garbage Collector.`;
+                        statArray.innerHTML = `Desconectar un extremo en la lista enlazada solo pone el puntero <code>sig = null</code> ($O(1)$).`;
+                        dibujarEscena();
                     });
 
-                    btnSearch.addEventListener('click', async () => {
-                        const val = parseInt(input.value);
-                        if (isNaN(val)) return;
-                        setControls(false);
-                        await searchNode(val);
-                        drawTree();
-                        msg.innerText = "Esperando nueva acción...";
-                        setControls(true);
-                    });
-
-                    btnDelete.addEventListener('click', async () => {
-                        const val = parseInt(input.value);
-                        if (isNaN(val)) return;
-                        setControls(false);
-                        await deleteNode(val);
-                        input.value = '';
-                        setControls(true);
-                    });
-
-                    // Inicializamos el árbol con algunos valores predefinidos para que no empiece vacío
-                    /*async function initTree() {
-                        const initValues = [50, 30, 70, 20, 40, 60, 80];
-                        for(let val of initValues) {
-                            if(!root) root = new Node(val);
-                            else {
-                                let curr = root;
-                                while (true) {
-                                    if (val < curr.value) {
-                                        if (!curr.left) { curr.left = new Node(val); break; }
-                                        curr = curr.left;
-                                    } else {
-                                        if (!curr.right) { curr.right = new Node(val); break; }
-                                        curr = curr.right;
-                                    }
-                                }
+                    // Botón: Ejecutar Garbage Collector
+                    document.getElementById('btn-run-gc').addEventListener('click', () => {
+                        let limpiados = 0;
+                        heapCells.forEach(c => {
+                            if (c.state === 'garbage') {
+                                c.state = 'free';
+                                c.nombre = '';
+                                limpiados++;
                             }
+                        });
+
+                        if (limpiados > 0) {
+                            statLinked.innerHTML = `<strong>Garbage Collector ejecutado:</strong> Se han reciclado <strong>${limpiados} celda(s)</strong> huérfanas y han vuelto a estar disponibles en la Memoria Libre.`;
+                            statArray.innerHTML = `Recuerda: en Unity, si obligas al GC a limpiar mucha basura en mitad de una partida, el juego puede sufrir un pequeño tirón de FPS.`;
+                        } else {
+                            statLinked.innerHTML = `El Garbage Collector ha revisado la Memoria Libre pero no había basura pendiente de limpiar.`;
                         }
-                        drawTree();
-                        msg.innerText = "Árbol inicial cargado. Prueba a eliminar el 50 para ver el Caso 3.";
-                    }
-                    
-                    initTree();*/
+                        dibujarEscena();
+                    });
+
+                    document.getElementById('btn-reset-lab').addEventListener('click', inicializarLaboratorio);
+
+                    inicializarLaboratorio();
                 });
-            </script>
+            </script>-->
 
-            <h3>6. Análisis de Eficiencia</h3>
+            <h3>4. Ejercicios de estructuras lineales y TADs</h3>
+            <p>Aplica los conceptos de encapsulación, arrays estáticos y estructuras dinámicas implementando en C# las siguientes propuestas para Unity:</p>
+            <ol>
+                <li><strong>Especificación y TAD Cargador de Munición:</strong> Diseña y programa la clase <code>CargadorTAD</code> respetando la encapsulación (variables <code>private</code> y métodos <code>public</code>). Debe almacenar hasta un máximo fijo de $N$ balas usando un array e incluir las rutinas de acceso <code>Disparar()</code>, <code>RecargarUnaBala()</code>, <code>RecargarCompleto()</code> y <code>BalasRestantes()</code>.</li>
+                <li><strong>Ampliando <code>MiListaArray</code>:</strong> Añade a la clase <code>MiListaArray</code> del apartado 3.1 un método público <code>bool Contiene(string itemBuscado)</code> que devuelva <code>true</code> si el objeto está dentro de la lista o <code>false</code> en caso contrario, sin permitir que nadie fuera de la clase acceda directamente al array privado.</li>
+                <li><strong>Intercambio en <code>MiListaArray</code>:</strong> Añade a <code>MiListaArray</code> el método <code>void Intercambiar(int indiceA, int indiceB)</code> que intercambie de posición dos elementos del inventario en tiempo constante $O(1)$ comprobando antes que ambos índices sean válidos.</li>
+                <li><strong>Recorrido de Nodos enlazados:</strong> Añade a la clase <code>MiListaEnlazada</code> del apartado 3.2 un método <code>void MostrarComboEnConsola()</code> que recorra todos los nodos desde la <code>cabeza</code> hasta <code>null</code> e imprima en la consola de Unity la cadena de ataques con formato <code>"Espadazo -> Escudo -> Fuego -> null"</code>.</li>
+                <li><strong>Contar apariciones en Lista Enlazada:</strong> Implementa dentro de <code>MiListaEnlazada</code> el método <code>int ContarRepeticiones(string ataque)</code> que recorra los nodos enlazados y devuelva cuántas veces aparece ese ataque en el combo.</li>
+                <li><strong>Obtener el último Nodo:</strong> Implementa en <code>MiListaEnlazada</code> el método <code>string ObtenerUltimo()</code> que devuelva el dato guardado en el último nodo de la lista (o <code>null</code> si está vacía). ¿Cuál es su coste en Notación $O$ Grande? ¿Cómo podrías conseguir que ese coste pasara a ser $O(1)$ añadiendo un nuevo atributo privado?</li>
+                <li><strong>Cima sin desapilar (<code>Peek</code>):</strong> Añade a la clase <code>MiPilaMovimientos</code> del apartado 3.3 el método <code>string VerCima()</code> que devuelva cuál fue el último movimiento guardado en la cima de la pila pero <strong>sin eliminarlo</strong> de ella.</li>
+                <li><strong>Invertir un Array usando una Pila:</strong> Escribe una función en C# que reciba un array de nombres de niveles <code>string[] niveles</code> y utilice una instancia de tu clase <code>MiPilaMovimientos</code> para invertir el orden de los elementos del array (apilando todos primero y desapilándolos después).</li>
+                <li><strong>Historial de Navegación de Menús:</strong> Utiliza un TAD Pila para programar un controlador de menús en Unity (<code>MenuPrincipal -> Opciones -> Audio -> Controles</code>) donde cada vez que el jugador abre una subpantalla se apila su nombre, y cada vez que pulsa la tecla <code>Escape</code> se desapila para volver exactamente a la pantalla anterior.</li>
+                <li><strong>Cola Circular de Turnos de Combate:</strong> Utilizando la clase <code>MiColaEnemigos</code> del apartado 3.3, programa un método <code>string SiguienteTurno()</code> para un RPG por turnos: debe desencolar al combatiente que está en el frente para que actúe y, si sigue vivo, volver a encolarlo inmediatamente al final de la cola para que espere su próximo turno.</li>
+            </ol>
 
-            <h4>Comparativa de Complejidad (Big O)</h4>
-            <p>La eficiencia depende fuertemente de si el árbol está equilibrado. En el peor caso (árbol degenerado), todos los nodos caen hacia un solo lado 
-                y el árbol se comporta exactamente como una lista enlazada (perdiendo toda su ventaja).</p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Estructura</th>
-                        <th>Búsqueda </th>
-                        <th>Inserción</th>
-                        <th>Peor Caso (Desequilibrado)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Array Ordenado</strong></td>
-                        <td>$O(n)$ </td>
-                        <td>$O(n)$ </td>
-                        <td>$---$ </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Árbol ABB</strong> </td>
-                        <td><strong>$O(\log n)$</strong> </td>
-                        <td><strong>$O(\log n)$</strong> </td>
-                        <td>$O(n)$ </td>
-                    </tr>
-                </tbody>
-            </table>
-
-           
-
-            <h4>El Árbol de Escena (Jerarquía) en el Motor de Juego</h4>
-            <p>El núcleo de motores como Unity organiza los elementos visuales y colisiones mediante una estructura de datos jerárquica de tipo árbol:</p>
-
-            <p> AÑADIR ARBOL DE JERARQUIA DE EJEMPLOS</p>
-            
-            <p>Cada nodo almacena una <strong>matriz de transformación afín local</strong> (traslación, rotación, escala). 
-                Al recorrer el grafo de manera descendente, el motor multiplica las matrices para calcular la posición absoluta final. 
-                Si el nodo "Tanque" avanza, todos sus nodos hijos heredarán el movimiento y se desplazarán solidariamente en el espacio.</p>
-                 
-           
             <div class="callout challenge">
-                <div class="callout-title"><i class="fa-solid fa-dumbbell"></i> Investiga: </div>
-                 <p>Estructuras derivadas de esta jerarquía, como los <strong>BSP Trees</strong> (Particionado de Espacio Binario), 
-                <strong>Octrees</strong> o los <strong>BVH Trees
-                </strong> (Jerarquía de Volúmenes Envolventes), permiten al motor descartar rápidamente colisiones o renderizados de objetos ocultos, optimizando el rendimiento.</p>
-                <a href="https://www.youtube.com/watch?v=wLHXn8IlAiA"> BSP Trees: The Magic Behind Collision Detection in Quake </a>
+                <div class="callout-title"><i class="fa-solid fa-dumbbell"></i> Ejercicio Extra: Conectando con el Tema 1 y el Tema 2</div>
+                <p>Una <strong>Lista Enlazada</strong> es una estructura naturalmente recursiva (un <code>Nodo</code> apunta a otro <code>Nodo</code> que es la cabeza de una lista más pequeña, hasta llegar al caso base <code>null</code>). Implementa en <code>MiListaEnlazada</code> dos versiones de un método que imprima los nodos <strong>en orden inverso</strong> (del último al primero): una versión <strong>recursiva</strong> y otra <strong>iterativa</strong> (apoyándote en una Pila). Después, analiza usando nuestro mapa de memoria del apartado 2 qué ocurre en la <strong>Pila de Ejecución</strong> y en la <strong>Memoria Libre</strong> en cada una de las dos soluciones, e indica su coste temporal y espacial en Notación $O$ Grande.</p>
             </div>
-            
-               
 
         </section>
     </main>
@@ -544,6 +1163,7 @@
     <script src="../main.js"></script>
     <script>
         cargarMenu("../"); // Carga el índice dinámicamente ajustando las rutas
+        hljs.highlightAll();
     </script>
 </body>
 </html>
